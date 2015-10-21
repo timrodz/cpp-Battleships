@@ -24,21 +24,28 @@
 
 int main() {
 	int choice = 0;
-
 	Game game;
 	game.setFirstRunValue(true);
-	game.setGrid(10, 10);
-	game.setAvailableShips(5);
-	game.drawBattleScreen();
-	if (game.getFirstRunValue() == true) {
+	game.setGrid();
+	game.setAvailableShips();
+	
+	while (game.getFirstRunValue() == true) {
+
+		game.drawBattleScreen();
 		choice = game.setupSortMode();
 		game.setFirstRunValue(false);
+
 		if (choice == 1) {
 			game.automaticSort();
 		}
 		else {
 			game.manualSort();
 		}
+		if (game.getCancelSort() == true) {
+			game.setFirstRunValue(true);
+		}
+		// Finished placing ships
+		
 	}
 	
 	std::cin.get();

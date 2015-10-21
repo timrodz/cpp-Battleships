@@ -30,7 +30,7 @@ public:
 	// although the game requires a 10x10 grid
 	// @param rMax the number of rows
 	// @param cMax the number of columns
-	void setGrid(int rMax, int cMax);
+	void setGrid();
 
 	// Automatic or manual setup of the ships
 	int setupSortMode();
@@ -42,10 +42,10 @@ public:
 	bool getFirstRunValue() const;
 
 	// Set available ships to use
-	void setAvailableShips(int availableShips);
+	void setAvailableShips();
 	
 	// Get the current available ships
-	void getAvailableShips();
+	void printAvailableShips();
 
 	// Get number of ships
 	int getDeployedShips(int) const;
@@ -57,7 +57,7 @@ public:
 	void manualSort();
 
 	// Managing to go to a certain position given x and y coordinates
-	void gotoxy(int, int);
+	//void gotoxy(int, int);
 
 	// Getting the size of the ships
 	int getShipSize(int shipType) const;
@@ -65,16 +65,21 @@ public:
 	// Getting the code (character that represents) for the current ship
 	char getShipCode(int code) const;
 
-	void createShip();
-/// Private methods
-private:
-	void computerSort();
-	void clearInput();
+	// This method checks if either the player and the AI can place ships
+	bool canPlaceShips(int i) const;
+	
+	bool getCancelSort() const;
 
-/// Private variables
+	/// Private member functions
+private:
+	void createShipAuto();
+	void createShipManual();
+	void computerSort();
+
+	/// Member variables
 private:
 	// To make sure we can only set up a maximum of 5 ships (Per player)
-	const int MAX_SHIPS = 5;
+	static const int MAX_SHIPS;
 
 	// Reading the ship to place
 	std::string strShip;
@@ -86,6 +91,9 @@ private:
 	
 	// Check whether or not it's the first run of the game (decided by the constructor)
 	bool firstRun;
+
+	// To check whether or not the player has canceled the ship placement
+	bool cancelSort;
 
 	// Check whether or not we've a free space
 	bool spaceTaken;
@@ -101,13 +109,7 @@ private:
 	
 	// shipAvailable prints the available ships (to place) according to
 	// playerShips and computerShips
-	std::string availableShipsName[5] = {
-		"Aircraft Carrier (@)",
-		"Battleship       (#)",
-		"Destroyer        (&)",
-		"Submarine        (*)",
-		"Patrol Boat      ($)"
-	};
+	static const std::string availableShipsName[5];
 };
 
 #endif /* Game.h */
