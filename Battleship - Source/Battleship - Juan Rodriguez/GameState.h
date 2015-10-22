@@ -24,12 +24,12 @@ public:
 	GameState();
 	~GameState();
 
-	// For drawing each state according to the game
+	// Draws according to the current state
 	void GameState::drawState(int state);
-	// Setting our states
+	// Sets the current state
 	void setState(int state);
-	// Getting our states
-	int  getState() const;
+	// Gets the current state
+	int getState() const;
 
 /// Private member variables
 private:
@@ -39,7 +39,8 @@ private:
 		SETUP    = 1,
 		GAME     = 2,
 		GAMEOVER = 3,
-		QUIT     = 4
+		QUIT     = 4,
+		CREDITS  = 5
 	};
 
 	int currentState;

@@ -20,11 +20,14 @@
 #include "Game.h"
 #include "Screen.h"
 
-Ship::Ship(int ID, int x, int y):
-	shipModel(ID), 
-	xPosition(x), 
-	yPosition(y) 
-{
+Ship::Ship() {
+	shipCounter = new int[10];
 }
 
-Ship::~Ship() {}
+Ship::Ship(int ID, int x, int y):shipModel(ID), xPosition(x), yPosition(y) {
+
+
+
+}
+
+Ship::~Ship() { delete[] shipCounter; }

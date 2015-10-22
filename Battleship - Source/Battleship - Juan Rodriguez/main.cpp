@@ -20,89 +20,107 @@
 // Local includes
 #include "Game.h"
 #include "GameState.h"
+#include "Ship.h"
 
 int main() {
 
+	Game game;
+	GameState gameState;
+	
+	int menuOption = 0;
 	int sortOption = 0;
+	std::string gameOverOption = "";
 
 	enum State {
 		MENU     = 0,
 		SETUP    = 1,
 		GAME     = 2,
 		GAMEOVER = 3,
-		QUIT     = 4
+		QUIT     = 4,
+		CREDITS  = 5
 	};
-	
-	Game game;
 
-	GameState gs;
+	game.setCollisionGrid();
+	game.setAvailableShips();
 
-	//game.setGrid();
-	//game.setAvailableShips();
-	gs.setState(MENU);
+	// Initial state
+	gameState.setState(SETUP);
 	
 	while (true) {
-		
-		//gs.setState(QUIT);
 
-		// TODO
-		while (gs.getState() == MENU) {
+		while (gameState.getState() == MENU) {
 
-			gs.drawState(MENU);
+			gameState.drawState(MENU);
+			menuOption = game.setMenu();
 
-			gs.setState(SETUP);
+			if (menuOption == 1) {
+				gameState.setState(SETUP);
+			}
+			else if (menuOption == 2) {
+				gameState.setState(CREDITS);
+			}
+			else if (menuOption == 3) {
+				gameState.setState(GAMEOVER);
+			}
 
 		} /// Menu
 
-		while (gs.getState() == SETUP) {
+		while (gameState.getState() == SETUP) {
 
-			gs.drawState(SETUP);
-			//gs.drawState(GAME);
-			/*gs.setState(GAME);
-			break;*/
+			gameState.drawState(SETUP);
 
-			sortOption = game.setupSortMode();
+			sortOption = game.setSetupMode();
 
 			if (sortOption == 1) {
 				game.sortAuto();
-				gs.setState(GAME);
+				gameState.setState(GAME);
 			}
 			else if (sortOption == 2) {
 				game.sortManual();
-				gs.setState(GAME);
+				gameState.setState(GAME);
 			}
-			else {
-				gs.setState(SETUP);
+			else if (sortOption == 0) {
+				gameState.setState(MENU);
 			}
 
-			if (game.getCancelSort() == "CANCEL") {
-				gs.setState(SETUP);
+			if (game.getState() == "CANCEL") {
+				gameState.setState(SETUP);
 			}
 
 		} /// Setup
 		
 		// TODO
-		while (gs.getState() == GAME) {
+		while (gameState.getState() == GAME) {
 
-			gs.drawState(GAME);
+			gameState.drawState(GAME);
 
-			//gs.setState(GAMEOVER);
+			game.update();
 
 		} /// Game
 
-		while (gs.getState() == GAMEOVER) {
+		while (gameState.getState() == GAMEOVER) {
 
-			gs.drawState(GAMEOVER);
-			
+			gameState.drawState(GAMEOVER);
+			gameOverOption = game.setGameOver();
 
-			gs.setState(QUIT);
+			if (gameOverOption == "Y") {
+				gameState.setState(MENU);
+			}
+			else if (gameOverOption == "N") {
+				gameState.setState(QUIT);
+			}			
 
 		} /// Game over
 
-		if (gs.getState() == QUIT) {
-			gs.drawState(QUIT);
+		while (gameState.getState() == CREDITS) {
+			gameState.drawState(CREDITS);
+			gameState.setState(MENU);
+		} /// Credits 
+
+		if (gameState.getState() == QUIT) {
+			gameState.drawState(QUIT);
 			break;
-		}
+		} /// Quit
 
 	} /// Main loop
 	

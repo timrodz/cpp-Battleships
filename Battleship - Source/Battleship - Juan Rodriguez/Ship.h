@@ -30,9 +30,12 @@ private:
 
 public:
 	// We'll create a ship with the given ID (1-5)
+	Ship();
 	Ship(int ID, int x, int y);
 	~Ship();
 private:
+	//int ship
+	int* shipCounter;
 	int shipModel;
 	int xPosition;
 	int yPosition;

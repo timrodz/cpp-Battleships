@@ -1,16 +1,22 @@
-//#include <iostream>
-//#include <cassert>
+//
+// Bachelor of Software Engineering
+// Media Design School
+// Auckland
+// New Zealand
+// 
+// (c) 2005 - 2015 Media Design School
+// 
+// File name   : GameState.cpp
+// Description : Game state manager
+// Author      : Juan Rodriguez
+// Mail        : juan.rod6618@mediadesignschool.com
+// 
 
 #include "GameState.h"
 
-GameState::GameState() {
+GameState::GameState() {}
 
-}
-
-
-GameState::~GameState() {
-
-}
+GameState::~GameState() {}
 
 void GameState::drawState(int state) {
 	if (state == MENU) {
@@ -27,6 +33,9 @@ void GameState::drawState(int state) {
 	}
 	else if (state == QUIT) {
 		game.drawQuitScreen();
+	}
+	else if (state == CREDITS) {
+		game.drawCreditsScreen();
 	}
 }
 

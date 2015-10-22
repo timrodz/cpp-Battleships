@@ -16,7 +16,12 @@
 #ifndef __GAME_H__
 #define __GAME_H__
 
+// Library includes
 #include <string>
+
+// Local includes
+#include "Ship.h"
+#include "Screen.h"
 
 class Game {
 public:
@@ -24,85 +29,124 @@ public:
 	Game(const Game& game);
 	~Game();
 
-	// Drawing methods
-	void drawMenuScreen();
-	void drawSetupScreen();
-	void drawGameScreen();
-	void drawGameOverScreen();
-	void drawQuitScreen();
-
+	/// game start ///
 	// Setup of our 12x12 grid (extra spaces for collision checking)
-	void setGrid();
-
-	// Automatic or manual setup of the ships
-	int setupSortMode();
-	int getSortMode() const;
-
-	void placeShip(int dir, int row, int col, int ship_ID, int player);
-
-	// set the value of firstRun
-	void setFirstRunValue(bool firstRunValue);
-
-	// get the value of setup
-	bool getFirstRunValue() const;
+	void setCollisionGrid();
 
 	// Set available ships to use
 	void setAvailableShips();
 	
-	// Get the current available ships
-	void printAvailableShips();
-
 	// Get number of ships
-	int getDeployedShips(int) const;
-
-	// Automatically sorting the grid
-	void sortAuto();
+	int getPlacedShips(int) const;
 	
-	// Manually sorting the grid
-	void sortManual();
+	// This method checks if either the player and the AI can place ships
+	bool canPlaceShips(int i) const;
 
 	// Getting the size of the ships
 	int getShipSize(int shipType) const;
-
-	// Getting the code (character that represents) for the current ship
-	char getShipCode(int code) const;
-
-	// This method checks if either the player and the AI can place ships
-	bool canPlaceShips(int i) const;
 	
-	// For cancelling the ship placement (manual sort only)
-	void Game::setCancelSort(std::string sort);
-	std::string getCancelSort() const;
+	// Getting the code (character that represents) for the current ship
+	char getShipCode(int code) const;	
 
-	/// Private member functions
+	/// Navigation ///
+	void setState(std::string setState);
+	std::string getState() const;
+
+	/// MENU ///
+	// Drawing the state
+	void drawMenuScreen();
+
+	// Set menu
+	int setMenu();
+
+	/// SETUP ///
+	// Drawing the state
+	void drawSetupScreen();
+	
+	// Automatic or manual setup of the ships
+	int setSetupMode();
+	
+	// Get setup mode
+	int getSetupMode() const;
+
+	// Get the current available ships
+	void printAvailableShips();
+	
+	// Read rows and columns
+	void getCoordinates(std::string& inputRow, std::string& inputCol, int& row, int& col, int x, int y);
+	
+	// Automatically sorting the grid
+	void sortAuto();
+
+	// Manually sorting the grid
+	void sortManual();
+
+// Only can be accessed through our sortAuto and sortManual methods
 private:
+	// This will only be called inside the setup
 	void createShipAuto(int player);
 	void createShipManual();
-	//void computerSort();
+
+// Rest of the public functions
+public:
+	// This method checks for collisions and available spaces
+	// FEATURES:
+	// -> Knows which direction to place the ship
+	// -> Knows if it's the player's or computer's turn
+	// -> Places ships on the screen accordingly and sets the ship unavailable after it's been used
+	void placeShip(int dir, int row, int col, int SHIP_ID, int player);
+
+	/// GAME ///
+	// Drawing the state
+	void drawGameScreen();
+
+	// Game loop
+	void update();
+
+	/// GAMEOVER ///
+	// Drawing the state
+	void drawGameOverScreen();
+	std::string setGameOver();
+
+	/// QUIT ///
+	// Drawing the state
+	void drawQuitScreen();
+
+	/// CREDITS ///
+	// Drawing the state
+	void drawCreditsScreen();
+
+
 
 	/// Member variables
 private:
-	// To manage our game states
-	//GameState gs;
+	//Ship* s = new Ship[10];
+	// Keeping track of our turns
+	int turn;
 
 	// To make sure we can only set up a maximum of 5 ships (Per player)
 	static const int MAX_SHIPS;
 
 	// Reading the ship to place
 	std::string inputRow;
-	std::string strShip;
+	std::string inputShip;
 	int shipModel;
 
-	// Main menu
-	std::string input;
-	int sort;
+	// MENU
+	int menuOption;
+
+	// SETUP
+	std::string inputSort;
+	int sortValue;
+
+	// GAME
+
+	// GAME OVER
+	std::string gameOver;
 
 	// Number of ships currently used 
 	// (stores up to whatever value *setAvailableShip* takes as parameter)
 	int currentShipsPlaced[2];
-	
-	// Check whether or not it's the first run of the game (decided by the constructor)
-	bool firstRun;
 
 	// To check whether or not the player has canceled the ship placement
 	std::string cancelSort;

@@ -45,7 +45,7 @@ void gotoxy(int x, int y, bool hideCursor);
 void setColor(Color c);
 
 // Clearing the console on the right side of the screen
-void clearInput(int x);
+void clearText(int x);
 
 // -> eq: equal                                (== || ==)
 // -> btw: between                             (>= || <=)
@@ -70,7 +70,7 @@ enum Comparison {
 
 // String to Integer conversion
 int stringToInt(
-	std::string& input,      // String to read
+	std::string& inputSort,      // String to read
 	std::string phrase,      // Text to display when errors occur
 	Comparison comp,         // Type of comparison
 	int min, int max,        // range of comparison

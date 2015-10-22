@@ -49,7 +49,7 @@ void setColor(Color c) {
 	SetConsoleTextAttribute(consoleHandle, c);
 }
 
-void clearInput(int x) {
+void clearText(int x) {
 	for (int i = x; i < 80; ++i) {
 		for (int j = 0; j <= 24; ++j) {
 			gotoxy(i, j, true);
@@ -115,7 +115,7 @@ std::string readLimitedInput(int x, int y) {
 
 /// Reading strings
 // String to Int with Comparison
-int stringToInt(std::string& input,
+int stringToInt(std::string& inputSort,
 	std::string phrase,
 	Comparison comp,
 	int min, int max,
