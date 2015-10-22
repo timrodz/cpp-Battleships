@@ -39,7 +39,7 @@ enum Color {
 // Going to a desired position in the screen
 // SCREEN DIMENSIONS: 80 wide by 24 tall
 // Optional: can hide the cursor
-void gotoxy(int x, int y, bool hideCursor);
+void gotoxy(int x, int y);
 
 // Setting the color for our screen
 void setColor(Color c);
@@ -47,15 +47,6 @@ void setColor(Color c);
 // Clearing the console on the right side of the screen
 void clearInput(int x);
 
-// -> eq: equal                                (== || ==)
-// -> btw: between                             (>= || <=)
-// -> btwNIB: between not including both sides (>  ||  <)
-// -> btwNIL: between not including LEFT side  (>  || <=)
-// -> btwNIR: between not including RIGHT side (>= ||  <)
-// -> out: outside of the range                (<= || >=)
-// -> outNIB: outside not including both sides (<  ||  >)
-// -> outNIL: outside not including LEFT side  (<  || >=)
-// -> outNIR: outside not including RIGHT side (<= ||  >)
 enum Comparison {
 	eq,
 	btw,
@@ -68,17 +59,39 @@ enum Comparison {
 	outNIR
 };
 
-// String to Integer conversion
-int stringToInt(
-	std::string& input,      // String to read
-	std::string phrase,      // Text to display when errors occur
-	Comparison comp,         // Type of comparison
-	int min, int max,        // range of comparison
-	int x, int y,            // coordinates to print
-	int xOffset, int yOffset // Offsets for printing (when errors occur)
-);
+// - String to int conversion (and comparison between a range) -
+// input - string to read
+// phrase - text to display when errors happen
+// comparisonType:
+// -> eq: equal                                (== || ==)
+// -> btw: between                             (>= || <=)
+// -> btwNIB: between not including both sides (>  ||  <)
+// -> btwNIL: between not including LEFT side  (>  || <=)
+// -> btwNIR: between not including RIGHT side (>= ||  <)
+// -> out: outside of the range                (<= || >=)
+// -> outNIB: outside not including both sides (<  ||  >)
+// -> outNIL: outside not including LEFT side  (<  || >=)
+// -> outNIR: outside not including RIGHT side (<= ||  >)
+//
+// ******************************************************
+// Other parameters
+// min - minimum value to check
+// max - maximum value to check
+// x, y - coordinates to print
+// xOffset, yOffset - coordinates to print with offset (when errors happen)
+int stringToIntComp(std::string input, 
+				std::string phrase, 
+				Comparison comp, 
+				int min, int max, 
+				int x, int y, 
+				int xOffset, int yOffset);
 
-// Printing a string/character (with overloading)
+// Reading a string/character
+void read(std::string s, std::string phrase, int x, int y, Color stringColor);
+void read(char c, std::string phrase, int x, int y, Color charColor);
+void read(char c, std::string phrase, int x, int y);
+
+// Printing a string/character
 void print(int x, int y, Color stringColor, std::string s);
 void print(int x, int y, std::string s);
 void print(Color stringColor, std::string s);
@@ -88,6 +101,5 @@ void print(Color charColor, char c);
 void print(int x, int y, int number);
 
 // Limits the input to only one character
-// by using the '_getch()' function
 std::string readLimitedInput(int x, int y);
 #endif /* Screen.h */
