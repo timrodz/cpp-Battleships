@@ -101,7 +101,14 @@ public:
 	void drawGameScreen();
 
 	// Game loop
-	void update();
+	int update();
+	int getWinner() const;
+
+	// Creating a random coordinate (for the enemy)
+	void randomCoordinate(int currentTurn, int& row, int& col, int x, int y);
+
+	// Checking collision
+	void checkHit(int row, int col, int currentTurn);
 
 	/// GAMEOVER ///
 	// Drawing the state
@@ -120,7 +127,9 @@ public:
 
 	/// Member variables
 private:
-	//Ship* s = new Ship[10];
+	// Our winner
+	int winner;
+
 	// Keeping track of our turns
 	int turn;
 
@@ -157,7 +166,20 @@ private:
 	// our 2D grid
 	// We use sizes of 12 because we also need to check if the ship goes out of bounds
 	// And our grid gets *imaginarily* drawn from the starting point (1, 1) until (13, 13)
-	int grid[12][12];
+	int playerGrid[12][12];
+	int computerGrid[12][12];
+
+	// hit/miss grid for the player
+	int playerHitGrid[10][10];
+	int playerMissGrid[10][10];
+
+	// hit/miss for the computer
+	int computerHitGrid[10][10];
+	int computerMissGrid[10][10];
+
+	// For printing the misses/hits on the screen
+	int hitCounter[2];
+	int missCounter[2];
 	
 	// playerShips and computerShips will store the used ships
 	int* currentPlayerShip;

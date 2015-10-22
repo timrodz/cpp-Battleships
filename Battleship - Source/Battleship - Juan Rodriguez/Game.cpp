@@ -46,12 +46,20 @@ const string Game::SHIP_NAME[5] = {
 
 /// Constructor
 Game::Game() {
+	srand((unsigned int)time(NULL));
 	/// For determining which space has been taken in order to place ships
 	spaceTaken = false;
 	/// Player ships
 	currentShipsPlaced[0] = 0;
 	/// Computer ships
 	currentShipsPlaced[1] = 0;
+	/// Hit/miss counters
+	// Player
+	hitCounter[0] = 0;
+	missCounter[0] = 0;
+	// Computer
+	hitCounter[1] = 0;
+	missCounter[1] = 0;
 }
 
 Game::Game(const Game& game) {
@@ -71,9 +79,16 @@ Game::~Game() {
 void Game::setCollisionGrid() {
 	for (int i = 0; i < 12; ++i) {
 		for (int j = 0; j < 12; ++j) {
-			grid[i][j] = 0;
-			grid[11][j] = 1;
-			grid[i][11] = 1;
+			playerGrid[i][j] = 0;
+			playerGrid[11][j] = 1;
+			playerGrid[i][11] = 1;
+		}
+	}
+	for (int i = 0; i < 12; ++i) {
+		for (int j = 0; j < 12; ++j) {
+			computerGrid[i][j] = 0;
+			computerGrid[11][j] = 1;
+			computerGrid[i][11] = 1;
 		}
 	}
 }
@@ -191,9 +206,9 @@ void Game::drawSetupScreen() {
 		}
 	}
 
-	DEBUG_IF(1) {
+	//DEBUG_IF(1) {
 		letter = 'A';
-		print(6, 13, YELLOW, "Computer");
+		print(6, 13, YELLOW, "Opponent");
 		setColor(TEAL);
 		for (int i = 0; i <= 10; ++i) {
 			for (int j = 0; j <= 10; ++j) {
@@ -206,15 +221,15 @@ void Game::drawSetupScreen() {
 				}
 			}
 		}
-	}
+	//}
 
 	// Drawing the water
 	for (int i = 0; i < 19; ++i) {
 		for (int j = 0; j < 10; ++j) {
 			print(i + 1, j + 2, DARKTEAL, "~");
-			DEBUG_IF(1) {
+			//DEBUG_IF(1) {
 				print(i + 1, j + 15, DARKTEAL, "~");
-			}
+			//}
 		}
 	}
 }
@@ -289,7 +304,6 @@ void Game::printAvailableShips() {
 
 /// Setting rows and columns
 void Game::getCoordinates(string& inputRow, string& inputCol, int& row, int& col, int x, int y) {
-	//string inputRow, inputCol;
 	/// Rows (HORIZONTAL)
 	while (true) {
 		print(x, y, "> Select row (A - J)");
@@ -300,9 +314,8 @@ void Game::getCoordinates(string& inputRow, string& inputCol, int& row, int& col
 			return;
 		}
 		setColor(WHITE);
-		string tempString(inputRow);
 		if (inputRow >= "A" && inputRow <= "J") {
-			char charToInt = tempString.at(0);
+			char charToInt = inputRow[0];
 			row = charToInt - 65;
 
 			for (int i = 44; i < 80; ++i)
@@ -392,8 +405,6 @@ void Game::sortManual() {
 
 /// Creating a ship (AUTOMATIC)
 void Game::createShipAuto(int player) {
-
-	srand((unsigned int)time(NULL));
 	
 	int tempShip = rand() % 5;
 	int tempRow = rand() % 10;
@@ -519,28 +530,45 @@ void Game::placeShip(int dir, int row, int col, int SHIP_ID, int player) {
 	// Collision checking (includes out of bounds)
 	for (int temp = position; temp < getShipSize(SHIP_ID) + position; ++temp) {
 
-		if (dir == 1) {
-			currentGridPos = grid[row][temp];
-			nextGridPos = grid[row][temp + 1];
-		}
-		else {
-			currentGridPos = grid[temp][col];
-			nextGridPos = grid[temp + 1][col];
-		}
-
-		if (temp >= 9 && nextGridPos == 1) {
-			if (getSetupMode() == 2 && player == 0) {
-				temp -= 2;
-				print(50, 20, RED, "####  ");
-				print(YELLOW, "OUT OF BOUNDS");
-				print(RED, "  ####");
-				print(50, 21, RED, "####    ");
-				print(YELLOW, "TRY AGAIN");
-				print(RED, "    ####");
-				Sleep(1500);
+		if (player == 0) {
+			if (dir == 1) {
+				currentGridPos = playerGrid[row][temp];
+				nextGridPos = playerGrid[row][temp + 1];
 			}
-			return;
+			else {
+				currentGridPos = playerGrid[temp][col];
+				nextGridPos = playerGrid[temp + 1][col];
+			}
+
+			if (temp >= 9 && nextGridPos == 1) {
+				if (getSetupMode() == 2) {
+					temp -= 2;
+					print(50, 20, RED, "####  ");
+					print(YELLOW, "OUT OF BOUNDS");
+					print(RED, "  ####");
+					print(50, 21, RED, "####    ");
+					print(YELLOW, "TRY AGAIN");
+					print(RED, "    ####");
+					Sleep(1500);
+				}
+				return;
+			}
 		}
+		else if (player == 1) {
+			if (dir == 1) {
+				currentGridPos = computerGrid[row][temp];
+				nextGridPos = computerGrid[row][temp + 1];
+			}
+			else {
+				currentGridPos = computerGrid[temp][col];
+				nextGridPos = computerGrid[temp + 1][col];
+			}
+
+			if (temp >= 9 && nextGridPos == 1) {
+				return;
+			}
+		}
+		
 
 		if (currentGridPos == 1) {
 			spaceTaken = true;
@@ -561,11 +589,12 @@ void Game::placeShip(int dir, int row, int col, int SHIP_ID, int player) {
 	if (spaceTaken == false) {
 		for (int tempPosition = position; tempPosition < getShipSize(SHIP_ID) + position; ++tempPosition) {
 			if (dir == 1) {
-				grid[row][tempPosition] = 1;
 				if (player == 0) {
+					playerGrid[row][tempPosition] = 1;
 					print(row * 2 + 1, tempPosition + 2, GREEN, getShipCode(SHIP_ID));
 				}
 				else {
+					computerGrid[row][tempPosition] = 1;
 					DEBUG_IF(1) {
 						print(row * 2 + 1, tempPosition + 15, GREEN, getShipCode(SHIP_ID));
 					}
@@ -573,11 +602,12 @@ void Game::placeShip(int dir, int row, int col, int SHIP_ID, int player) {
 
 			}
 			else {
-				grid[tempPosition][col] = 1;
 				if (player == 0) {
+					playerGrid[tempPosition][col] = 1;
 					print(tempPosition * 2 + 1, col + 2, GREEN, getShipCode(SHIP_ID));
 				}
 				else {
+					computerGrid[tempPosition][col] = 1;
 					DEBUG_IF(1) {
 						print(tempPosition * 2 + 1, col + 15, GREEN, getShipCode(SHIP_ID));
 					}
@@ -608,11 +638,10 @@ void Game::placeShip(int dir, int row, int col, int SHIP_ID, int player) {
 
 void Game::drawGameScreen() {
 	clearText(44);
-	print(7 + 22, 0, YELLOW, "Strategy");
+	print(29, 0, YELLOW, "Strategy");
 	setColor(TEAL);
 	for (int i = 0; i <= 20; ++i) {
 		for (int j = 0; j <= 10; ++j) {
-			//if ((j == 0 || j == 10)) {
 			if (j == 0 || j == 10) {
 				print(i + 22, j + 1, "#");
 			} if (i == 0 || i == 10 || i == 20) {
@@ -622,19 +651,201 @@ void Game::drawGameScreen() {
 	}
 	print(25, 2, YELLOW, "Miss");
 	print(36, 2, YELLOW, "Hits");
+
+	DEBUG_IF(1) {
+		print(29, 13, YELLOW, "Strategy");
+		setColor(TEAL);
+		for (int i = 0; i <= 20; ++i) {
+			for (int j = 0; j <= 10; ++j) {
+				if (j == 0 || j == 10) {
+					print(i + 22, j + 14, "#");
+				} if (i == 0 || i == 10 || i == 20) {
+					print(i + 22, j + 14, "#");
+				}
+			}
+		}
+		print(25, 15, YELLOW, "Miss");
+		print(36, 15, YELLOW, "Hits");
+	}
 }
 
-void Game::update() {
+int Game::update() {
 	string inputCol;
+	//int randomRow, randomCol;
+	int row, col;
 	int x = 50;
 	int y = 0;
-	int row, col;
-	print(x,   y, GREEN, "YOUR TURN");
-	print(x, ++y, GREEN, "TRY TO HIT YOUR OPPONENT");
-	//print(x, ++y, "");
-	getCoordinates(inputRow, inputCol, row, col, x, ++y);
-	print(x, ++y, row);
-	print(x, ++y, col);
+	while (true) {
+		y = 0;
+		if (turn % 2 == 0) {
+			print(x, y, "                       ");
+			print(x, y, GREEN, "YOUR TURN");
+			print(x, ++y, GREEN, "GUESS A POSITION AND");
+			print(x, ++y, GREEN, "TRY TO HIT YOUR OPPONENT");
+
+			if (turn == 0) 
+				getCoordinates(inputRow, inputCol, row, col, x, ++y);
+			else 
+				randomCoordinate(0, row, col, x, ++y);
+			/*if (computerHitGrid[row][col] == 1 || computerMissGrid[row][col] == 1) {
+				print(x, ++y, RED, "Position already tested!");
+				Sleep(2000);
+			}
+			else {
+				checkHit(row, col, turn);
+			}*/
+			
+			checkHit(row, col, turn);
+			//print(44, 23, inputRow);
+		}
+		else {
+			clearText(44);
+			print(x, y, GREEN, "OPPONENT'S TURN");
+			randomCoordinate(1, row, col, x, ++y);
+			checkHit(row, col, turn);
+		}
+
+		if (hitCounter[turn % 2] == 10) {
+			winner = turn % 2;
+			return winner;
+		}
+
+		turn++;
+
+	}
+}
+
+int Game::getWinner() const {
+	return winner;
+}
+
+// Generating a random coordinate for the computer
+void Game::randomCoordinate(int currentTurn, int & row, int & col, int x, int y) {
+
+	while (true) {
+		char charToString;
+		row = rand() % 10;
+		col = rand() % 10;
+		// Player
+		if (currentTurn == 0) {
+			// If it's already been hit or missed, we 're-roll' our PSNG
+			if (computerHitGrid[row][col] == 1 || computerMissGrid[row][col]) {
+				row = rand() % 10;
+				col = rand() % 10;
+			}
+			else {
+				charToString = row + 65;
+				inputRow[0] = charToString;
+				break;
+			}
+		}
+		else {
+			// If it's already been hit or missed, we 're-roll' our PSNG
+			if (playerHitGrid[row][col] == 1 || playerMissGrid[row][col]) {
+				row = rand() % 10;
+				col = rand() % 10;
+			}
+			else {
+				char charToString = row + 65;
+				inputRow[0] = charToString;
+				break;
+			}
+		}
+		
+	}
+}
+
+// currentTurn: -> Turn % 2 (0 for player, 1 for computer)
+void Game::checkHit(int row, int col, int currentTurn) {
+
+	// Player
+	if (turn % 2 == 0) {
+
+		// Hit
+		if (computerGrid[row][col] == 1) {
+			print(50, 7, RED, "You hit your opponent!");
+			computerHitGrid[row][col] = 1;
+			print(row * 2 + 1, col + 15, RED, 'x');
+
+			// Displaying new miss/hits aside
+			if (hitCounter[turn % 2] >= 8 && hitCounter[turn % 2] < 10) {
+				print(36, hitCounter[turn % 2] + 3 - 8, inputRow + std::to_string(col));
+			}
+			else {
+				print(33, hitCounter[turn % 2] + 3, inputRow + std::to_string(col));
+			}
+
+			hitCounter[turn % 2]++;
+			Sleep(2000);
+		}
+		// Miss
+		else {
+			print(50, 7, RED, "You missed your shot!");
+			computerMissGrid[row][col] = 1;
+
+			// Displaying new miss/hits aside
+
+			if (missCounter[turn % 2] >= 16 && missCounter[turn % 2] < 24) {
+				print(29, missCounter[turn % 2] + 3 - 16, inputRow + std::to_string(col));
+			}
+			if (missCounter[turn % 2] >= 8 && missCounter[turn % 2] < 16) {
+				print(26, missCounter[turn % 2] + 3 - 8, inputRow + std::to_string(col));
+			}
+			else {
+				print(23, missCounter[turn % 2] + 3, inputRow + std::to_string(col));
+			}
+
+			missCounter[turn % 2]++;
+			Sleep(2000);
+		}
+
+	} // Player
+	// Computer
+	else if (turn % 2 == 1) {
+		
+		// Hit
+		if (playerGrid[row][col] == 1) {
+			print(50, 2, RED, "Your opponent hit you!");
+			playerHitGrid[row][col] = 1;
+			print(row * 2 + 1, col + 2, RED, 'x');
+			DEBUG_IF(1) {
+				if (hitCounter[turn % 2] >= 8 && hitCounter[turn % 2] < 10) {
+					print(36, hitCounter[turn % 2] + 16 - 8, inputRow + std::to_string(col));
+				} else {
+					print(33, hitCounter[turn % 2] + 16, inputRow + std::to_string(col));
+				}
+				
+			}
+			
+			hitCounter[turn % 2]++;
+			Sleep(2000);
+		}
+		// Miss
+		else {
+			print(50, 2, RED, "Your opponent missed!");
+			playerMissGrid[row][col] = 1;
+			DEBUG_IF(1) {
+
+				if (missCounter[turn % 2] >= 16 && missCounter[turn % 2] < 24) {
+					print(29, missCounter[turn % 2] + 16 - 16, inputRow + std::to_string(col));
+				}
+				if (missCounter[turn % 2] >= 8 && missCounter[turn % 2] < 16) {
+					print(26, missCounter[turn % 2] + 16 - 8, inputRow + std::to_string(col));
+				}
+				else {
+					print(23, missCounter[turn % 2] + 16, inputRow + std::to_string(col));
+				}
+				
+			}
+			missCounter[turn % 2]++;
+			Sleep(2000);
+		}
+
+	} // Computer
+
+	if (missCounter[turn % 2] == 24) {
+		missCounter[turn % 2] = 0;
+	}
 }
 
 /**************************************/

@@ -29,6 +29,7 @@ int main() {
 	
 	int menuOption = 0;
 	int sortOption = 0;
+	int winner = -1;
 	std::string gameOverOption = "";
 
 	enum State {
@@ -94,7 +95,9 @@ int main() {
 
 			gameState.drawState(GAME);
 
-			game.update();
+			winner = game.update();
+
+			gameState.setState(GAMEOVER);
 
 		} /// Game
 
