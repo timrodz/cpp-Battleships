@@ -31,7 +31,7 @@ public:
 	// Setup of our 12x12 grid (extra spaces for collision checking)
 	void setCollisionGrid();
 
-	// Set available ships to use
+	// Resets the ships
 	void setAvailableShips();
 	
 	// Get number of ships
@@ -69,12 +69,6 @@ public:
 
 	// Get the current available ships
 	void printAvailableShips();
-	
-	// Read rows and columns
-	void getCoordinates(std::string& inputRow, std::string& inputCol, int& row, int& col, int x, int y);
-	
-	// Creating a random coordinate (for the enemy)
-	void randomCoordinate(int currentTurn, int& row, int& col, int x, int y);
 
 	// Automatically sorting the grid
 	void sortAuto();
@@ -82,20 +76,27 @@ public:
 	// Manually sorting the grid
 	void sortManual();
 
-// Only can be accessed through our sortAuto and sortManual methods
+/// Only can be accessed through our sortAuto and sortManual methods
 private:
 	// This will only be called inside the setup
 	void createShipAuto(int player);
 	void createShipManual();
 
-// Rest of the public functions
+/// Rest of the public functions
 public:
+	// Gets our coordinates (row, column, direction)
+	// It'll only get direction and confirmation for placement if the player's on manual setup
+	void getCoordinate(std::string& inputRow, std::string& inputCol, int& row, int& col, int x, int y);
+
+	// Creating a random coordinate (for the enemy)
+	void randomCoordinate(int currentTurn, int& row, int& col, int x, int y);
+
 	// This method checks for collisions and available spaces
 	// FEATURES:
 	// -> Knows which direction to place the ship
 	// -> Knows if it's the player's or computer's turn
 	// -> Places ships on the screen accordingly and sets the ship unavailable after it's been used
-	void placeShip(int dir, int row, int col, int SHIP_ID, int player);
+	void drawShip(int dir, int row, int col, int SHIP_ID, int player);
 
 	/// GAME ///
 	// Drawing the state
@@ -123,9 +124,7 @@ public:
 	// Drawing the state
 	void drawCreditsScreen();
 
-
-
-	/// Member variables
+	/// Private members
 private:
 	// Keeping track of our turns
 	int turn;
@@ -142,13 +141,16 @@ private:
 	int menuOption;
 
 	// SETUP
-	std::string inputSort;
+	std::string inputSort, inputCol;
+	std::string inputDir, confirmPlacement;
 	int sortValue;
+	int row, col;
+	char dir;
 
 	// GAME
 
 	// GAME OVER
-	std::string gameOver;
+	std::string confirmExit;
 
 	// Number of ships currently used 
 	// (stores up to whatever value *setAvailableShip* takes as parameter)

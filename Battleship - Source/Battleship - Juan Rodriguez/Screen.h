@@ -66,9 +66,7 @@ void gotoxy(int x, int y, bool hideCursor);
 void setColor(Color c);
 
 // Clearing the console on the right side of the screen
-void clearInput(int x);
-
-
+void clearInput(int x, int yMin, int yMax);
 
 // String to Integer conversion
 int stringToInt(

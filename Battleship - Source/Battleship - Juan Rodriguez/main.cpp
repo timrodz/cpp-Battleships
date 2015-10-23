@@ -40,14 +40,12 @@ int main() {
 		CREDITS  = 5
 	};
 
-	game.setCollisionGrid();
-	game.setAvailableShips();
-
 	// Initial state
 	gameState.setState(MENU);
 	
 	while (true) {
 
+		/// Menu
 		while (gameState.getState() == MENU) {
 
 			gameState.drawState(MENU);
@@ -65,6 +63,7 @@ int main() {
 
 		} /// Menu
 
+		/// Setup
 		while (gameState.getState() == SETUP) {
 
 			gameState.drawState(SETUP);
@@ -89,7 +88,7 @@ int main() {
 
 		} /// Setup
 		
-		// TODO
+		/// Game
 		while (gameState.getState() == GAME) {
 
 			gameState.drawState(GAME);
@@ -105,6 +104,7 @@ int main() {
 
 		} /// Game
 
+		/// Game over
 		while (gameState.getState() == GAMEOVER) {
 
 			gameState.drawState(GAMEOVER);
@@ -119,11 +119,13 @@ int main() {
 
 		} /// Game over
 
+		/// Credits
 		while (gameState.getState() == CREDITS) {
 			gameState.drawState(CREDITS);
 			gameState.setState(MENU);
 		} /// Credits 
 
+		/// Quit
 		if (gameState.getState() == QUIT) {
 			gameState.drawState(QUIT);
 			break;

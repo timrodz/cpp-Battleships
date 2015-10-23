@@ -13,11 +13,12 @@
 // 
 
 // Library includes
+#include <conio.h>
+#include <stdlib.h>
 #include <iostream>
 #include <string>
 #include <sstream>
 #include <Windows.h>
-#include <conio.h>
 
 // FLAGS
 #define CANCEL -1
@@ -49,78 +50,74 @@ void setColor(Color c) {
 	SetConsoleTextAttribute(consoleHandle, c);
 }
 
-void clearInput(int x) {
+void clearInput(int x, int yMin, int yMax) {
 	for (int i = x; i < 80; ++i) {
-		for (int j = 0; j <= 24; ++j) {
-			gotoxy(i, j, true);
-			std::cout << " ";
+		for (int j = yMin; j <= yMax; ++j) {
+			print(i, j, " ");
 		}
 	}
+	gotoxy(x, 0, true);
 }
 
 /// Reading strings
 // String to Int with Comparison
-int stringToInt(std::string& inputSort,
-	std::string phrase,
-	Comparison comp,
-	int min, int max,
-	int x, int y,
-	int xOffset, int yOffset) {
-	// Number to compare
-	int i;
+int stringToInt(
+	std::string& inputSort,     // String to read
+	std::string phrase,         // Text to display when errors occur
+	Comparison comp,            // Type of comparison
+	int minValue, int maxValue, // range of comparison
+	int x, int y,               // coordinates to print
+	int xOffset, int yOffset    // Offsets for printing (when errors occur)
+	) { // FUNCTION CODE BELOW
+	//////////////////////////
+	int numberToCompare;
 	while (true) {
+		// Accessing the string value of a stringstream is done by calling the 'str' method
 		std::stringstream ss(readLimitedInput(x, y));
 		if (ss.str() == "CANCEL") {
 			return CANCEL;
 		}
-		if (ss >> i) {
+		if (ss >> numberToCompare) {
+			// cases are explained in Screen.h
 			switch (comp) {
 			case eq:
-				if (i == min || i == max) {
-					return i;
-				}
+				if (numberToCompare == minValue || numberToCompare == maxValue)
+					return numberToCompare;
 				break;
 			case btw:
-				if (i >= min || i <= max) {
-					return i;
-				}
+				if (numberToCompare >= minValue || numberToCompare <= maxValue)
+					return numberToCompare;
 				break;
 			case btwNIB:
-				if (i > min || i < max) {
-					return i;
-				}
+				if (numberToCompare > minValue || numberToCompare < maxValue)
+					return numberToCompare;
 				break;
 			case btwNIL:
-				if (i > min || i <= max) {
-					return i;
-				}
+				if (numberToCompare > minValue || numberToCompare <= maxValue) 
+					return numberToCompare;
 				break;
 			case btwNIR:
-				if (i >= min || i < max) {
-					return i;
-				}
+				if (numberToCompare >= minValue || numberToCompare < maxValue) 
+					return numberToCompare;
 				break;
+			// All of the following are negated
 			case out:
-				if (!(i <= min || i >= max)) {
-					return i;
-				}
+				if (!(numberToCompare <= minValue || numberToCompare >= maxValue))
+					return numberToCompare;
 				break;
 			case outNIB:
-				if (!(i < min || i > max)) {
-					return i;
-				}
+				if (!(numberToCompare < minValue || numberToCompare > maxValue))
+					return numberToCompare;
 				break;
 			case outNIL:
-				if (!(i < min || i >= max)) {
-					return i;
-				}
+				if (!(numberToCompare < minValue || numberToCompare >= maxValue)) 
+					return numberToCompare;
 				break;
 			case outNIR:
-				if (!(i <= min || i > max)) {
-					return i;
-				}
+				if (!(numberToCompare <= minValue || numberToCompare > maxValue)) 
+					return numberToCompare;
 				break;
-			}
+			} // switch end
 			print(x, y, " ");
 			print(x - xOffset, y + yOffset, phrase);
 		}
@@ -128,10 +125,10 @@ int stringToInt(std::string& inputSort,
 			print(x, y, " ");
 			print(x - xOffset, y + yOffset, phrase);
 		}
-	}
+	} // while end
 }
 
-// Printing strings
+/// Printing strings
 void print(int x, int y, Color stringColor, std::string s) {
 	setColor(stringColor);
 	gotoxy(x, y, true);
@@ -150,7 +147,7 @@ void print(Color stringColor, std::string s) {
 	setColor(WHITE);
 }
 
-// Printing characters
+/// Printing characters
 void print(int x, int y, Color charColor, char c) {
 	setColor(charColor);
 	gotoxy(x, y, true);
@@ -169,7 +166,7 @@ void print(Color charColor, char c) {
 	setColor(WHITE);
 }
 
-// Printing integers
+/// Printing integers
 void print(int x, int y, int number) {
 	gotoxy(x, y, true);
 	std::cout << number;
@@ -233,7 +230,7 @@ std::string readLimitedInput(int x, int y) {
 // Alternative to system("pause");
 void confirmRETURN(int x, int y) {
 	print(x, y, WHITE, "Press ");
-	print(GREEN, "RETURN");
+	print(GREEN, "ENTER / RETURN");
 	print(WHITE, " to continue> ");
 	while (true) {
 		//char confirm = _getch();
