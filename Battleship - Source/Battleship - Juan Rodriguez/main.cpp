@@ -7,7 +7,7 @@
 // (c) 2005 - 2015 Media Design School
 // 
 // File name   : main.cpp
-// Description : This file contains our main code (most of the work is done via Game.cpp
+// Description : This file contains the main loop with all the game's states
 // Author      : Juan Rodriguez
 // Mail        : juan.rod6618@mediadesignschool.com
 // 
@@ -20,7 +20,6 @@
 // Local includes
 #include "Game.h"
 #include "GameState.h"
-#include "Ship.h"
 
 int main() {
 
@@ -30,7 +29,7 @@ int main() {
 	int menuOption = 0;
 	int sortOption = 0;
 	int winner = -1;
-	std::string gameOverOption = "";
+	char gameOverOption = '\0';
 
 	enum State {
 		MENU     = 0,
@@ -45,7 +44,7 @@ int main() {
 	game.setAvailableShips();
 
 	// Initial state
-	gameState.setState(SETUP);
+	gameState.setState(MENU);
 	
 	while (true) {
 
@@ -95,21 +94,26 @@ int main() {
 
 			gameState.drawState(GAME);
 
-			winner = game.update();
+			game.update();
 
-			gameState.setState(GAMEOVER);
+			if (game.getState() == "CANCEL") {
+				gameState.setState(SETUP);
+			}
+			else {
+				gameState.setState(GAMEOVER);
+			}
 
 		} /// Game
 
 		while (gameState.getState() == GAMEOVER) {
 
 			gameState.drawState(GAMEOVER);
-			gameOverOption = game.setGameOver();
+			gameOverOption = game.setGameOver().at(0);
 
-			if (gameOverOption == "Y") {
+			if (gameOverOption == 'Y') {
 				gameState.setState(MENU);
 			}
-			else if (gameOverOption == "N") {
+			else if (gameOverOption == 'N') {
 				gameState.setState(QUIT);
 			}			
 
