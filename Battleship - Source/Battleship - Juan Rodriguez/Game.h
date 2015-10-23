@@ -20,13 +20,11 @@
 #include <string>
 
 // Local includes
-#include "Ship.h"
 #include "Screen.h"
 
 class Game {
 public:
 	Game();
-	Game(const Game& game);
 	~Game();
 
 	/// game start ///
@@ -46,7 +44,7 @@ public:
 	int getShipSize(int shipType) const;
 	
 	// Getting the code (character that represents) for the current ship
-	char getShipCode(int code) const;	
+	char getShipCode(int code) const;
 
 	/// Navigation ///
 	void setState(std::string setState);
@@ -75,6 +73,9 @@ public:
 	// Read rows and columns
 	void getCoordinates(std::string& inputRow, std::string& inputCol, int& row, int& col, int x, int y);
 	
+	// Creating a random coordinate (for the enemy)
+	void randomCoordinate(int currentTurn, int& row, int& col, int x, int y);
+
 	// Automatically sorting the grid
 	void sortAuto();
 
@@ -101,14 +102,13 @@ public:
 	void drawGameScreen();
 
 	// Game loop
-	int update();
-	int getWinner() const;
-
-	// Creating a random coordinate (for the enemy)
-	void randomCoordinate(int currentTurn, int& row, int& col, int x, int y);
+	void update();
 
 	// Checking collision
 	void checkHit(int row, int col, int currentTurn);
+
+	// When a winner is found
+	void getWinner(int currentPlayer);
 
 	/// GAMEOVER ///
 	// Drawing the state
@@ -127,9 +127,6 @@ public:
 
 	/// Member variables
 private:
-	// Our winner
-	int winner;
-
 	// Keeping track of our turns
 	int turn;
 
@@ -177,9 +174,8 @@ private:
 	int computerHitGrid[10][10];
 	int computerMissGrid[10][10];
 
-	// For printing the misses/hits on the screen
+	// Determining who has won
 	int hitCounter[2];
-	int missCounter[2];
 	
 	// playerShips and computerShips will store the used ships
 	int* currentPlayerShip;

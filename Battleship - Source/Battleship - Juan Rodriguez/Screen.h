@@ -36,17 +36,6 @@ enum Color {
 	WHITE = 15
 };
 
-// Going to a desired position in the screen
-// SCREEN DIMENSIONS: 80 wide by 24 tall
-// Optional: can hide the cursor
-void gotoxy(int x, int y, bool hideCursor);
-
-// Setting the color for our screen
-void setColor(Color c);
-
-// Clearing the console on the right side of the screen
-void clearText(int x);
-
 // -> eq: equal                                (== || ==)
 // -> btw: between                             (>= || <=)
 // -> btwNIB: between not including both sides (>  ||  <)
@@ -67,6 +56,19 @@ enum Comparison {
 	outNIL,
 	outNIR
 };
+
+// Going to a desired position in the screen
+// SCREEN DIMENSIONS: 80 wide by 24 tall
+// Optional: can hide the cursor
+void gotoxy(int x, int y, bool hideCursor);
+
+// Setting the color for our screen
+void setColor(Color c);
+
+// Clearing the console on the right side of the screen
+void clearInput(int x);
+
+
 
 // String to Integer conversion
 int stringToInt(
@@ -90,4 +92,8 @@ void print(int x, int y, int number);
 // Limits the input to only one character
 // by using the '_getch()' function
 std::string readLimitedInput(int x, int y);
+
+// Alternative to system("pause")
+void confirmRETURN(int x, int y);
+
 #endif /* Screen.h */

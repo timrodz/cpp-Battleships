@@ -49,66 +49,11 @@ void setColor(Color c) {
 	SetConsoleTextAttribute(consoleHandle, c);
 }
 
-void clearText(int x) {
+void clearInput(int x) {
 	for (int i = x; i < 80; ++i) {
 		for (int j = 0; j <= 24; ++j) {
 			gotoxy(i, j, true);
 			std::cout << " ";
-		}
-	}
-}
-
-// Limiting the input to only one character
-std::string readLimitedInput(int x, int y) {
-	// Limit of characters
-	const int LIMIT = 1;
-	// counter of characters
-	int stringIndex = 0;
-	// Our string to return
-	std::string stringToAppend;
-	// Our character that we'll append to 's'
-	char charToRead;
-	while (true) {
-		gotoxy(x, y, false);
-		charToRead = _getch();
-		// We make sure we've more than 0 letters 
-		// (otherwise we'll be popping the string at index -1)
-		if (charToRead == 8 && stringIndex > 0) {
-			stringToAppend.pop_back();
-			// Iterate back to our last position
-			stringIndex--;
-			x--;
-			print(x, y, " ");
-		}
-		else if (charToRead == 8 && stringIndex == 0) {
-			// Nothing happens (on purpose)
-		}
-		else {
-			// This limits the amount of characters that
-			// our input can receive (change 1 to desired limit)
-			if (stringIndex != LIMIT) {
-				// we push our character into our stack
-				stringToAppend.push_back(charToRead);
-				stringIndex++;
-				x++;
-				// Uppercase conversion
-				// We do this for every non-digit using the isdigit(std::string) function
-				// index - 1 because arrays are counted starting from 0, otherwise we can just use 'index'
-				if (!(isdigit(stringToAppend[stringIndex]))) {
-					stringToAppend[stringIndex - 1] = toupper(stringToAppend[stringIndex - 1]);
-				}
-			}
-		}
-		gotoxy(x - 1, y, false);
-		if (stringIndex - 1 != -1) {
-			std::cout << stringToAppend[stringIndex - 1];
-		}
-
-		if (charToRead == 13) {
-			return stringToAppend;
-		}
-		else if (charToRead == 27) {
-			return "CANCEL";
 		}
 	}
 }
@@ -228,4 +173,72 @@ void print(Color charColor, char c) {
 void print(int x, int y, int number) {
 	gotoxy(x, y, true);
 	std::cout << number;
+}
+
+// Limiting the input to only one character
+std::string readLimitedInput(int x, int y) {
+	// Limit of characters
+	const int LIMIT = 1;
+	// counter of characters
+	int stringIndex = 0;
+	// Our string to return
+	std::string stringToAppend;
+	// Our character that we'll append to 's'
+	char charToRead;
+	while (true) {
+		gotoxy(x, y, false);
+		charToRead = _getch();
+		// We make sure we've more than 0 letters 
+		// (otherwise we'll be popping the string at index -1)
+		if (charToRead == 8 && stringIndex > 0) {
+			stringToAppend.pop_back();
+			// Iterate back to our last position
+			stringIndex--;
+			x--;
+			print(x, y, " ");
+		}
+		else if (charToRead == 8 && stringIndex == 0) {
+			// Nothing happens (on purpose)
+		}
+		else {
+			// This limits the amount of characters that
+			// our input can receive (change 1 to desired limit)
+			if (stringIndex != LIMIT) {
+				// we push our character into our stack
+				stringToAppend.push_back(charToRead);
+				stringIndex++;
+				x++;
+				// Uppercase conversion
+				// We do this for every non-digit using the isdigit(std::string) function
+				// index - 1 because arrays are counted starting from 0, otherwise we can just use 'index'
+				if (!(isdigit(stringToAppend[stringIndex]))) {
+					stringToAppend[stringIndex - 1] = toupper(stringToAppend[stringIndex - 1]);
+				}
+			}
+		}
+		gotoxy(x - 1, y, false);
+		if (stringIndex - 1 != -1) {
+			std::cout << stringToAppend[stringIndex - 1];
+		}
+
+		if (charToRead == 13) {
+			return stringToAppend;
+		}
+		else if (charToRead == 27) {
+			return "CANCEL";
+		}
+	}
+}
+
+// Alternative to system("pause");
+void confirmRETURN(int x, int y) {
+	print(x, y, WHITE, "Press ");
+	print(GREEN, "RETURN");
+	print(WHITE, " to continue> ");
+	while (true) {
+		//char confirm = _getch();
+		if (_getch() == 13) {
+			break;
+		}
+	}
 }
