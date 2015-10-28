@@ -14,10 +14,7 @@
 
 #include "GameState.h"
 
-GameState::GameState() {}
-
-GameState::~GameState() {}
-
+// Drawing the state's correspondant screen
 void GameState::drawState(int state) {
 	if (state == MENU) {
 		game.drawMenuScreen();
@@ -39,10 +36,12 @@ void GameState::drawState(int state) {
 	}
 }
 
+// Setting the state
 void GameState::setState(int state) {
 	currentState = state;
 }
 
+// Getting the current state
 int GameState::getState() const {
 	return currentState;
 }

@@ -21,8 +21,6 @@
 class GameState {
 /// Public methods
 public:
-	GameState();
-	~GameState();
 
 	// Draws according to the current state
 	void GameState::drawState(int state);
@@ -34,6 +32,8 @@ public:
 /// Private member variables
 private:
 
+	Game game;
+
 	enum State {
 		MENU     = 0,
 		SETUP    = 1,
@@ -44,9 +44,6 @@ private:
 	};
 
 	int currentState;
-
-	// Accessing our game
-	Game game;
 
 };
 

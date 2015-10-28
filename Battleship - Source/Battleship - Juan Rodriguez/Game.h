@@ -108,8 +108,13 @@ public:
 	// Checking collision
 	void checkHit(int row, int col, int currentTurn);
 
+	bool hasBeenSunk(int shipCode, int row, int col, int turn);
+
 	// When a winner is found
 	void getWinner(int currentPlayer);
+
+	// Drawing ship information
+	void drawShipInfo(int x, int y);
 
 	/// GAMEOVER ///
 	// Drawing the state
@@ -123,6 +128,9 @@ public:
 	/// CREDITS ///
 	// Drawing the state
 	void drawCreditsScreen();
+
+	/// Borders of the screen
+	void drawScreenBorders();
 
 	/// Private members
 private:
@@ -143,11 +151,15 @@ private:
 	// SETUP
 	std::string inputSort, inputCol;
 	std::string inputDir, confirmPlacement;
-	int sortValue;
+	int setupMode;
 	int row, col;
 	char dir;
 
 	// GAME
+	std::string continuePlaying;
+	int shipSizeCounter;
+	bool hasFoundShip;
+	bool hasFoundShipDirection;
 
 	// GAME OVER
 	std::string confirmExit;

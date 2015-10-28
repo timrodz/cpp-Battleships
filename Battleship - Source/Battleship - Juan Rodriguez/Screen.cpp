@@ -14,22 +14,25 @@
 
 // Library includes
 #include <conio.h>
-#include <stdlib.h>
 #include <iostream>
 #include <string>
 #include <sstream>
 #include <Windows.h>
 
-// FLAGS
+// Cancelling input
 #define CANCEL -1
 
 // Local includes
 #include "Screen.h"
 
+// Defining our console handle, cursor position and coordinates to position the cursor to
 HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 CONSOLE_CURSOR_INFO cursor;
 COORD coord;
 
+// Going to a desired position in the screen
+// SCREEN DIMENSIONS: 80 wide by 24 tall
+// Optional: can hide the cursor
 void gotoxy(int x, int y, bool hideCursor) {
 	if (hideCursor == true) {
 		cursor.bVisible = false;
@@ -46,10 +49,12 @@ void gotoxy(int x, int y, bool hideCursor) {
 	SetConsoleCursorPosition(consoleHandle, coord);
 }
 
+// Setting the color for our screen
 void setColor(Color c) {
 	SetConsoleTextAttribute(consoleHandle, c);
 }
 
+// Clearing the console on the right side of the screen
 void clearInput(int x, int yMin, int yMax) {
 	for (int i = x; i < 80; ++i) {
 		for (int j = yMin; j <= yMax; ++j) {
@@ -74,48 +79,66 @@ int stringToInt(
 	while (true) {
 		// Accessing the string value of a stringstream is done by calling the 'str' method
 		std::stringstream ss(readLimitedInput(x, y));
-		if (ss.str() == "CANCEL") {
+		setColor(WHITE);
+		if (ss.str() == "~/.") {
 			return CANCEL;
 		}
+		// string stream to integer shift
 		if (ss >> numberToCompare) {
-			// cases are explained in Screen.h
 			switch (comp) {
+			// Equal
 			case eq:
-				if (numberToCompare == minValue || numberToCompare == maxValue)
+				if ((numberToCompare == minValue) || (numberToCompare == maxValue)) {
 					return numberToCompare;
+				}
 				break;
+			// Between
 			case btw:
-				if (numberToCompare >= minValue || numberToCompare <= maxValue)
+				if ((numberToCompare >= minValue) || (numberToCompare <= maxValue)) {
 					return numberToCompare;
+				}
 				break;
+			// Between not included both
 			case btwNIB:
-				if (numberToCompare > minValue || numberToCompare < maxValue)
+				if ((numberToCompare > minValue) || (numberToCompare < maxValue)) {
 					return numberToCompare;
+				}
 				break;
+			// Between not included left
 			case btwNIL:
-				if (numberToCompare > minValue || numberToCompare <= maxValue) 
+				if ((numberToCompare > minValue) || (numberToCompare <= maxValue)) {
 					return numberToCompare;
+				}
 				break;
+			// Between not included right
 			case btwNIR:
-				if (numberToCompare >= minValue || numberToCompare < maxValue) 
+				if ((numberToCompare >= minValue) || (numberToCompare < maxValue)) {
 					return numberToCompare;
+				}
 				break;
-			// All of the following are negated
+			// Outside
 			case out:
-				if (!(numberToCompare <= minValue || numberToCompare >= maxValue))
+				if (!(numberToCompare <= minValue) || (numberToCompare >= maxValue)) {
 					return numberToCompare;
+				}
 				break;
+			// Outside not included both
 			case outNIB:
-				if (!(numberToCompare < minValue || numberToCompare > maxValue))
+				if (!(numberToCompare < minValue) || (numberToCompare > maxValue)) {
 					return numberToCompare;
+				}
 				break;
+			// Outside not included left
 			case outNIL:
-				if (!(numberToCompare < minValue || numberToCompare >= maxValue)) 
+				if (!(numberToCompare < minValue) || (numberToCompare >= maxValue)) {
 					return numberToCompare;
+				}
 				break;
+			// Outside not included right
 			case outNIR:
-				if (!(numberToCompare <= minValue || numberToCompare > maxValue)) 
+				if (!(numberToCompare <= minValue) || (numberToCompare > maxValue)) {
 					return numberToCompare;
+				}
 				break;
 			} // switch end
 			print(x, y, " ");
@@ -187,20 +210,21 @@ std::string readLimitedInput(int x, int y) {
 		charToRead = _getch();
 		// We make sure we've more than 0 letters 
 		// (otherwise we'll be popping the string at index -1)
-		if (charToRead == 8 && stringIndex > 0) {
+		if ((charToRead == 8) && (stringIndex > 0)) {
 			stringToAppend.pop_back();
 			// Iterate back to our last position
 			stringIndex--;
 			x--;
 			print(x, y, " ");
 		}
-		else if (charToRead == 8 && stringIndex == 0) {
+		else if ((charToRead == 8) && (stringIndex == 0)) {
 			// Nothing happens (on purpose)
 		}
 		else {
 			// This limits the amount of characters that
 			// our input can receive (change 1 to desired limit)
 			if (stringIndex != LIMIT) {
+				
 				// we push our character into our stack
 				stringToAppend.push_back(charToRead);
 				stringIndex++;
@@ -208,21 +232,24 @@ std::string readLimitedInput(int x, int y) {
 				// Uppercase conversion
 				// We do this for every non-digit using the isdigit(std::string) function
 				// index - 1 because arrays are counted starting from 0, otherwise we can just use 'index'
-				if (!(isdigit(stringToAppend[stringIndex]))) {
+				if ( !( isdigit( stringToAppend[stringIndex] ) ) ) {
 					stringToAppend[stringIndex - 1] = toupper(stringToAppend[stringIndex - 1]);
 				}
+
 			}
 		}
 		gotoxy(x - 1, y, false);
 		if (stringIndex - 1 != -1) {
+			setColor(PINK);
 			std::cout << stringToAppend[stringIndex - 1];
 		}
 
 		if (charToRead == 13) {
+			//Beep(750, 100);
 			return stringToAppend;
 		}
 		else if (charToRead == 27) {
-			return "CANCEL";
+			return "~/.";
 		}
 	}
 }
@@ -233,7 +260,6 @@ void confirmRETURN(int x, int y) {
 	print(GREEN, "ENTER / RETURN");
 	print(WHITE, " to continue> ");
 	while (true) {
-		//char confirm = _getch();
 		if (_getch() == 13) {
 			break;
 		}

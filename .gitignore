@@ -2,8 +2,6 @@
 DEBUG
 RELEASE
 *.sdf
-*.vcxproj.filters
-*.suo
 
 # Windows image file caches
 Thumbs.db

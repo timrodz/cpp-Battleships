@@ -25,27 +25,28 @@ int main() {
 
 	Game game;
 	GameState gameState;
-	
-	int menuOption = 0;
-	int sortOption = 0;
-	int winner = -1;
-	char gameOverOption = '\0';
 
 	enum State {
-		MENU     = 0,
-		SETUP    = 1,
-		GAME     = 2,
+		MENU = 0,
+		SETUP = 1,
+		GAME = 2,
 		GAMEOVER = 3,
-		QUIT     = 4,
-		CREDITS  = 5
+		QUIT = 4,
+		CREDITS = 5
 	};
+	
+	// Options for each menu
+	int menuOption = 0;
+	int sortOption = 0;
+	//int winner = -1;
+	char gameOverOption = '\0';
 
 	// Initial state
 	gameState.setState(MENU);
 	
 	while (true) {
 
-		/// Menu
+		// Menu
 		while (gameState.getState() == MENU) {
 
 			gameState.drawState(MENU);
@@ -61,9 +62,9 @@ int main() {
 				gameState.setState(GAMEOVER);
 			}
 
-		} /// Menu
+		} // Menu
 
-		/// Setup
+		// Setup
 		while (gameState.getState() == SETUP) {
 
 			gameState.drawState(SETUP);
@@ -82,29 +83,29 @@ int main() {
 				gameState.setState(MENU);
 			}
 
-			if (game.getState() == "CANCEL") {
+			if (game.getState() == "~/.") {
 				gameState.setState(SETUP);
 			}
 
-		} /// Setup
+		} // !Setup
 		
-		/// Game
+		// Game
 		while (gameState.getState() == GAME) {
 
 			gameState.drawState(GAME);
 
 			game.update();
 
-			if (game.getState() == "CANCEL") {
+			if (game.getState() == "~/.") {
 				gameState.setState(SETUP);
 			}
 			else {
 				gameState.setState(GAMEOVER);
 			}
 
-		} /// Game
+		} // !Game
 
-		/// Game over
+		// Game over
 		while (gameState.getState() == GAMEOVER) {
 
 			gameState.drawState(GAMEOVER);
@@ -117,22 +118,23 @@ int main() {
 				gameState.setState(QUIT);
 			}			
 
-		} /// Game over
+		} // !Game over
 
-		/// Credits
+		// Credits
 		while (gameState.getState() == CREDITS) {
 			gameState.drawState(CREDITS);
 			gameState.setState(MENU);
-		} /// Credits 
+		} // !Credits 
 
-		/// Quit
+		// Quit
 		if (gameState.getState() == QUIT) {
 			gameState.drawState(QUIT);
 			break;
-		} /// Quit
+		} // !Quit
 
-	} /// Main loop
+	} // !Main loop
 	
 	game.~Game();
 	return 0;
+
 }
