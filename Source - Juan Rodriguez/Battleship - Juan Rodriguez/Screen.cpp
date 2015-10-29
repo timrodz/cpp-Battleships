@@ -66,16 +66,15 @@ void clearInput(int x, int yMin, int yMax) {
 
 /// Reading strings
 // String to Int with Comparison
-int stringToInt(
-	std::string& inputSort,     // String to read
-	std::string phrase,         // Text to display when errors occur
-	Comparison comp,            // Type of comparison
-	int minValue, int maxValue, // range of comparison
-	int x, int y,               // coordinates to print
-	int xOffset, int yOffset    // Offsets for printing (when errors occur)
-	) { // FUNCTION CODE BELOW
-	//////////////////////////
+int stringToInt(std::string& inputSort, // String to read
+	std::string phrase,                 // Text to display when errors occur
+	Comparison comp,                    // Type of comparison
+	int minValue, int maxValue,         // range of comparison
+	int x, int y,                       // coordinates to print
+	int xOffset, int yOffset) {         // Offsets for printing (when errors occur)
+
 	int numberToCompare;
+
 	while (true) {
 		// Accessing the string value of a stringstream is done by calling the 'str' method
 		std::stringstream ss(readLimitedInput(x, y));

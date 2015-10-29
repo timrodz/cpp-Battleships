@@ -88,9 +88,6 @@ public:
 	// It'll only get direction and confirmation for placement if the player's on manual setup
 	void getCoordinate(std::string& inputRow, std::string& inputCol, int& row, int& col, int x, int y);
 
-	// Creating a random coordinate (for the enemy)
-	void randomCoordinate(int currentTurn, int& row, int& col, int x, int y);
-
 	// This method checks for collisions and available spaces
 	// FEATURES:
 	// -> Knows which direction to place the ship
@@ -105,9 +102,16 @@ public:
 	// Game loop
 	void update();
 
+	// Creating a random coordinate (for the enemy)
+	void randomCoordinate(int currentTurn, int row, int col, int x, int y);
+
 	// Checking collision
 	void checkHit(int row, int col, int currentTurn);
 
+	// Direction of the ship
+	int getShipDirection(int row, int col);
+
+	// Knowing if the ship has been sunk or not
 	bool hasBeenSunk(int shipCode, int row, int col, int turn);
 
 	// When a winner is found
@@ -157,9 +161,12 @@ private:
 
 	// GAME
 	std::string continuePlaying;
-	int shipSizeCounter;
+	int shipHitCounter;
 	bool hasFoundShip;
-	bool hasFoundShipDirection;
+	int shipDirection;
+	int hitRow;
+	int hitCol;
+	int hitDir;
 
 	// GAME OVER
 	std::string confirmExit;

@@ -69,14 +69,12 @@ void setColor(Color c);
 void clearInput(int x, int yMin, int yMax);
 
 // String to Integer conversion
-int stringToInt(
-	std::string& inputSort,      // String to read
-	std::string phrase,      // Text to display when errors occur
-	Comparison comp,         // Type of comparison
-	int min, int max,        // range of comparison
-	int x, int y,            // coordinates to print
-	int xOffset, int yOffset // Offsets for printing (when errors occur)
-);
+int stringToInt(std::string& inputSort, // String to read
+	std::string phrase,                 // Text to display when errors occur
+	Comparison comp,                    // Type of comparison
+	int minValue, int maxValue,         // range of comparison
+	int x, int y,                       // coordinates to print
+	int xOffset, int yOffset);          // Offsets for printing (when errors occur)
 
 // Printing a string/character (with overloading)
 void print(int x, int y, Color stringColor, std::string s);
