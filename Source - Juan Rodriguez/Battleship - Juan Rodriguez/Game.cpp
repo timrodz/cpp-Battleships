@@ -726,33 +726,34 @@ void Game::update() {
 		/// Player
 		if (turn % 2 == 0) {
 
-			print(x, y, YELLOW, "> YOUR TURN");
+			/*print(x, y, YELLOW, "> YOUR TURN");
 			print(x, y + 1, GREEN, "Pick a position e.g. A-4, F-8, C-6");
-			print(x, y + 2, GREEN, "Try to hit your opponent's ships!");
-			//inputRow = "d";
-			//randomCoordinate(0, row, col, x, y + 1);
+			print(x, y + 2, GREEN, "Try to hit your opponent's ships!");*/
+			inputRow = "d";
+			randomCoordinate(0, row, col, x, y + 1);
 			
-			while (true) {
+			//while (true) {
 
-				// Getting a coordinate to hit
-				getCoordinate(inputRow, inputCol, row, col, x, y + 3);
+			//	// Getting a coordinate to hit
+			//	getCoordinate(inputRow, inputCol, row, col, x, y + 3);
 
-				// Making sure we don't hit the same position twice
-				if (confirmPlacement == "Y") {
-					if ((computerHitGrid[row][col] == 1) || (computerMissGrid[row][col] == 1)) {
-						print(x, y + 9, RED, "Position already hit. Try again");
-						print(x + 22, y + 3, " ");
-						print(x + 25, y + 5, " ");
-						print(x + 23, y + 7, " ");
-					}
-					else {
-						break;
-					}
-				}
-				else {
-					clearInput(x, 3, 10);
-				}
-			} // !while loop
+			//	// Making sure we don't hit the same position twice
+			//	if (confirmPlacement == "Y") {
+			//		if ((computerHitGrid[row][col] == 1) || (computerMissGrid[row][col] == 1)) {
+			//			print(x, y + 9, RED, "Position already hit. Try again");
+			//			print(x + 22, y + 3, " ");
+			//			print(x + 25, y + 5, " ");
+			//			print(x + 23, y + 7, " ");
+			//		}
+			//		else {
+			//			break;
+			//		}
+			//	}
+			//	else {
+			//		clearInput(x, 3, 10);
+			//	}
+			//} // !while loop
+
 		}
 		/// Computer
 		else {
@@ -789,36 +790,36 @@ void Game::update() {
 		checkHit(row, col, turn);
 
 		// Asking for confirmation to continue
-		confirmRETURN(x, y + 6);
+		//confirmRETURN(x, y + 6);
 
 		// Asks if wants to keep playing
-		if (turn % 2 != 0) {
+		//if (turn % 2 != 0) {
 
-			clearInput(x, 0, 9);
+		//	clearInput(x, 0, 9);
 
-			setColor(WHITE);
-			while (true) {
-				print(x, y + 1, "> Continue playing? (");
-				print(PINK, "Y");
-				print(WHITE, "/");
-				print(PINK, "N");
-				print(WHITE, ")");
-				print(GREEN, "> ");
-				continuePlaying = readLimitedInput(x + 27, y + 1);
+		//	setColor(WHITE);
+		//	while (true) {
+		//		print(x, y + 1, "> Continue playing? (");
+		//		print(PINK, "Y");
+		//		print(WHITE, "/");
+		//		print(PINK, "N");
+		//		print(WHITE, ")");
+		//		print(GREEN, "> ");
+		//		continuePlaying = readLimitedInput(x + 27, y + 1);
 
-				if (continuePlaying == "N") {
-					return;
-				}
-				else if (!((continuePlaying == "N") || (continuePlaying == "Y"))) {
-					setColor(WHITE);
-					print(x + 27, y + 1, " ");
-					print(x, y + 2, "Provide a correct option");
-				}
-				else {
-					break;
-				}
-			} // !Confirmation loop
-		}
+		//		if (continuePlaying == "N") {
+		//			return;
+		//		}
+		//		else if (!((continuePlaying == "N") || (continuePlaying == "Y"))) {
+		//			setColor(WHITE);
+		//			print(x + 27, y + 1, " ");
+		//			print(x, y + 2, "Provide a correct option");
+		//		}
+		//		else {
+		//			break;
+		//		}
+		//	} // !Confirmation loop
+		//}
 
 		// Next turn
 		turn++;
@@ -1237,11 +1238,20 @@ int Game::getShipDirection(int row, int col) {
 	// Vertical
 	if ((playerHitGrid[row][col - 1] == 1) || (playerHitGrid[row][col + 1] == 1)) {
 
-		if ((getShipCode(playerGrid[row][col] - 1)) == (getShipCode(playerGrid[row][col - 1] - 1)) ||
-			(getShipCode(playerGrid[row][col] - 1)) == (getShipCode(playerGrid[row][col + 1] - 1))) {
-			
-			return 1;
-			
+		if (col > 0) {
+
+			if ((getShipCode(playerGrid[row][col] - 1)) == (getShipCode(playerGrid[row][col - 1] - 1)) ||
+				(getShipCode(playerGrid[row][col] - 1)) == (getShipCode(playerGrid[row][col + 1] - 1))) {
+
+				return 1;
+
+			}
+			else {
+
+				return 0;
+
+			}
+
 		}
 		else {
 
@@ -1253,10 +1263,19 @@ int Game::getShipDirection(int row, int col) {
 	// Horizontal
 	else if ((playerHitGrid[row - 1][col] == 1) || (playerHitGrid[row + 1][col] == 1)) {
 
-		if ((getShipCode(playerGrid[row][col] - 1)) == (getShipCode(playerGrid[row - 1][col] - 1)) ||
-			(getShipCode(playerGrid[row][col] - 1)) == (getShipCode(playerGrid[row + 1][col] - 1))) {
+		if (row > 0) {
 
-			return -1;
+			if ((getShipCode(playerGrid[row][col] - 1)) == (getShipCode(playerGrid[row - 1][col] - 1)) ||
+				(getShipCode(playerGrid[row][col] - 1)) == (getShipCode(playerGrid[row + 1][col] - 1))) {
+
+				return -1;
+
+			}
+			else {
+
+				return 0;
+
+			}
 
 		}
 		else {
