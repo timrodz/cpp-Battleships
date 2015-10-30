@@ -101,8 +101,23 @@ void Game::setAvailableShips() {
 	hitCol = 0;
 	// Resetting current ships
 	for (int i = 0; i < 5; ++i) {
+
 		currentPlayerShip[i] = 0;
 		currentComputerShip[i] = 0;
+
+	}
+	// Resetting hit/miss grids
+	for (int i = 0; i < 10; ++i) {
+
+		for (int j = 0; j < 10; ++j) {
+
+			playerHitGrid[i][j]    = 0;
+			playerMissGrid[i][j]   = 0;
+			computerHitGrid[i][j]  = 0;
+			computerMissGrid[i][j] = 0;
+
+		}
+
 	}
 	// Player ships and hit counter
 	currentShipsPlaced[0] = 0;
@@ -841,9 +856,7 @@ void Game::randomCoordinate(int currentTurn, int _row, int  _col, int x, int y) 
 	int howManySteps = 0;
 
 	// ------------------------------ AI ------------------------------ //
-	// ------------------------------ AI ------------------------------ //
-	// ------------------------------ AI ------------------------------ //
-	
+
 	if (currentTurn % 2 == 1) {
 
 		if (hasFoundShip == true) {
@@ -867,33 +880,9 @@ void Game::randomCoordinate(int currentTurn, int _row, int  _col, int x, int y) 
 
 								}
 
-								//if ((playerHitGrid[_row][i + 1] == 1) && (_col < 9)) {
-								//
-								//	//_col++;
-								//	howManySteps++;
-								//	//_col = i;
-								//	//break;
-
-								//}
-								//else if ((playerHitGrid[_row][i - 1] == 1) && (_col > 0)) {
-
-								//	//_col--;
-								//	howManySteps--;
-								//	//_col = i;
-								//	//break;
-
-								//}
-
 							}
 
 							_col += howManySteps;
-
-							//if (_col < 9) {
-							//	//_col += howManySteps - 1;
-							//}
-							//else {
-							//	_col = _col - (howManySteps + 1);
-							//}
 							
 							if ((_col > 9) || (playerMissGrid[_row][_col] == 1) || (playerHitGrid[_row][_col] == 1)) {
 
@@ -921,33 +910,9 @@ void Game::randomCoordinate(int currentTurn, int _row, int  _col, int x, int y) 
 
 								}
 
-								/*if ((playerHitGrid[i + 1][_col] == 1) && (_row < 9)) {
-
-									_row = i;
-									break;
-
-								}
-								else if ((playerHitGrid[i - 1][_col] == 1) && (_row > 0)) {
-
-									_row = i;
-									break;
-
-								}*/
-
 							}
 
 							_row += howManySteps;
-
-							//row = 1 + howManySteps;
-							if (_row < 9) {
-								// 1, 2
-								// row = 1 + 2 - 1
-								// row = 2
-								//row += howManySteps - 1;
-							}
-							else {
-								//_row = _row - (howManySteps + 1);
-							}
 
 							if ((_row > 9) || (playerMissGrid[_row][_col] == 1) || (playerHitGrid[_row][_col] == 1)) {
 
@@ -965,8 +930,159 @@ void Game::randomCoordinate(int currentTurn, int _row, int  _col, int x, int y) 
 						// Direction not yet known
 						else {
 
-							// Vertical hit
-							if ((rand() % 2) % 2 == 0) {
+							// new version
+							int hitChance = 0;
+
+							// Make sure we haven't hit the near positions
+
+							// Left
+							if ((playerMissGrid[_row - 1][_col] == 0) || (playerHitGrid[_row - 1][_col] == 0)) {
+								if (_row > 0) {
+									hitChance += 1;
+								}
+							}
+							// Down
+							if ((playerMissGrid[_row][_col + 1] == 0) || (playerHitGrid[_row][_col + 1] == 0)) {
+								if (_col < 9) {
+									hitChance += 3;
+								}
+							}
+							// Right
+							if ((playerMissGrid[_row + 1][_col] == 0) || (playerHitGrid[_row + 1][_col] == 0)) {
+								if (_row < 9) {
+									hitChance += 5;
+								}
+							}
+							// Up
+							if ((playerMissGrid[_row][_col - 1] == 0) || (playerHitGrid[_row][_col - 1] == 0)) {
+								if (_col > 0) {
+									hitChance += 7;
+								}
+							}
+
+
+							// Checking how many positions are available
+							// None
+							if (hitChance == 0) {
+
+								break;
+
+							}
+							// Left
+							else if (hitChance == 1) {
+
+								_row--;
+
+							}
+							// Down
+							else if (hitChance == 3) {
+
+								_col++;
+
+							}
+							// Left, Down
+							else if (hitChance == 4) {
+
+								if ((rand() % 2) % 2 == 0) {
+
+									_row--;
+
+								}
+								else {
+
+									_col++;
+
+								}
+
+							}
+							// Right
+							if (hitChance == 5) {
+
+								_row++;
+
+							}
+							// Left, Right
+							else if (hitChance == 6) {
+
+								if ((rand() % 2) % 2 == 0) {
+
+									_row--;
+
+								}
+								else {
+
+									_row++;
+
+								}
+
+							}
+							// Up
+							else if (hitChance == 7) {
+
+								_col--;
+
+							}
+							// Left, Up - Right, Down
+							else if (hitChance == 8) {
+
+								// Left, Up
+								if (((playerMissGrid[_row][_col - 1] == 0) || (playerHitGrid[_row][_col - 1] == 0)) && (_row > 0 && _col > 0) ) {
+
+									if ((rand() % 2) % 2 == 0) {
+
+										_row--;
+
+									}
+									else {
+
+										_col--;
+
+									}
+
+								}
+								// Right, Down
+								else if (((playerMissGrid[_row][_col + 1] == 0) || (playerHitGrid[_row][_col + 1] == 0)) && (_row < 9 && _col < 9)) {
+
+									if ((rand() % 2) % 2 == 0) {
+
+										_row++;
+
+									}
+									else {
+
+										_col++;
+
+									}
+
+								}
+
+							}
+							// Left, Down, Right
+							else if (hitChance == 9) {
+
+								if ((rand() % 2) % 2 == 0) {
+
+									_col++;
+
+								}
+								else {
+
+									if ((rand() % 2) % 2 == 0) {
+
+										_row--;
+
+									}
+									else {
+
+										_row++;
+
+									}
+
+								}
+
+							}
+							// Down, Up
+							else if (hitChance == 10) {
 
 								if ((rand() % 2) % 2 == 0) {
 
@@ -980,8 +1096,32 @@ void Game::randomCoordinate(int currentTurn, int _row, int  _col, int x, int y) 
 								}
 
 							}
-							// Horizontal hit
-							else {
+							// Left, Down, Up
+							else if (hitChance == 11) {
+
+								if ((rand() % 2) % 2 == 0) {
+
+									_row--;
+
+								}
+								else {
+
+									if ((rand() % 2) % 2 == 0) {
+
+										_col++;
+
+									}
+									else {
+
+										_col--;
+
+									}
+
+								}
+
+							}
+							// Right, Up
+							else if (hitChance == 12) {
 
 								if ((rand() % 2) % 2 == 0) {
 
@@ -990,7 +1130,82 @@ void Game::randomCoordinate(int currentTurn, int _row, int  _col, int x, int y) 
 								}
 								else {
 
+									_col--;
+
+								}
+
+							}
+							// Left, Right, Up
+							else if (hitChance == 13) {
+
+								if ((rand() % 2) % 2 == 0) {
+
+									_col--;
+
+								}
+								else {
+
+									if ((rand() % 2) % 2 == 0) {
+
+										_row--;
+
+									}
+									else {
+
+										_row++;
+
+									}
+
+								}
+
+							}
+							// Down, Right, Up
+							else if (hitChance == 15) {
+
+								if ((rand() % 2) % 2 == 0) {
+
+									_row++;
+
+								}
+								else {
+
+									if ((rand() % 2) % 2 == 0) {
+
+										_col++;
+
+									}
+									else {
+
+										_col--;
+
+									}
+
+								}
+
+							}
+							// Left, Down, Right, Up
+							else if (hitChance == 16) {
+
+								int random = rand() % 4;
+
+								if (random == 0) {
+
 									_row--;
+
+								}
+								else if (random == 1) {
+
+									_col++;
+
+								}
+								else if (random == 2) {
+
+									_row++;
+
+								}
+								else if (random == 3) {
+
+									_col--;
 
 								}
 
@@ -1032,33 +1247,6 @@ void Game::randomCoordinate(int currentTurn, int _row, int  _col, int x, int y) 
 								}
 
 							}
-							
-							/*else {
-
-								if ((playerHitGrid[_row][_col - 1] == 1) && (_col > 0)) {
-
-									_col--;
-
-								}
-								else if ((playerHitGrid[_row][_col + 1] == 1) && (_col < 9)) {
-
-									_col--;
-
-								}
-
-								if ((playerHitGrid[_row - 1][_col] == 1) && (_row > 0)) {
-
-									_row--;
-
-								}
-
-								else if ((playerHitGrid[_row + 1][_col] == 1) && (_row < 9)) {
-
-									_row--;
-
-								}
-
-							}*/
 
 						}
 						else {
@@ -1082,10 +1270,8 @@ void Game::randomCoordinate(int currentTurn, int _row, int  _col, int x, int y) 
 		} // if (hasFoundShip == true)
 
 		  // ------------------------------ AI ------------------------------ //
-		  // ------------------------------ AI ------------------------------ //
-		  // ------------------------------ AI ------------------------------ //
 
-		  // Working method
+		// Working method
 		else {
 
 			while (true) {
@@ -1110,6 +1296,7 @@ void Game::randomCoordinate(int currentTurn, int _row, int  _col, int x, int y) 
 		}
 
 	}
+	// Player (Testing purposes only)
 	else {
 
 		while (true) {
@@ -1168,7 +1355,7 @@ void Game::checkHit(int row, int col, int currentTurn) {
 				print(row * 2 + 1, col + 15, RED, getShipCode(computerGrid[row][col] - 1));
 			}
 
-			hitCounter[turn % 2]++;
+			hitCounter[0]++;
 
 		}
 		// Miss
@@ -1212,7 +1399,7 @@ void Game::checkHit(int row, int col, int currentTurn) {
 			}
 
 			print(row * 2 + 1, col + 2, RED, getShipCode(playerGrid[row][col] - 1));
-			hitCounter[turn % 2]++;
+			hitCounter[1]++;
 
 		}
 		// Miss
