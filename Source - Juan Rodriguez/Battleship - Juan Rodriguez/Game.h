@@ -161,12 +161,13 @@ private:
 
 	// GAME
 	std::string continuePlaying;
+	// Determining how many hits has our ship received
 	int shipHitCounter;
 	bool hasFoundShip;
 	int shipDirection;
+	int shipsLeft[2];
 	int hitRow;
 	int hitCol;
-	int hitDir;
 
 	// GAME OVER
 	std::string confirmExit;
