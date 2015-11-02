@@ -472,109 +472,120 @@ void Game::createShipManual() {
 void Game::getCoordinate(string& inputRow, string& inputCol, int& row, int& col, int x, int y) {
 
 	setState("!X");
-	setColor(WHITE);
+	int tempY = y;
 
-	// Rows (HORIZONTAL)
 	while (true) {
-		print(x, y, "> Select row ("); 
-		print(PINK, "A - J");
-		print(WHITE, ")");
-		print(GREEN, "> ");
-		inputRow = readLimitedInput(x + 22, y);
-		if (inputRow >= "A" && inputRow <= "J") {
-			char charToInt = inputRow[0];
-			row = charToInt - 65;
 
-			clearInput(44, y + 1, y + 1);
-
-			break;
-		}
-		else {
-			setColor(WHITE);
-			print(x + 22, y, " ");
-			print(x, y + 1, "Provide a correct option");
-		}
-	} // Row loop
-
-	// Column (VERTICAL)
-	y += 2;
-	setColor(WHITE);
-	while (true) {
-		print(x, y, "> Select column (");
-		print(PINK, "0 - 9");
-		print(WHITE, ")");
-		print(GREEN, "> ");
-		col = stringToInt(inputCol, "Provide a correct option", btw, 0, 9, x + 25, y, 25, 1);
-
-		if (!(col == -1)) {
-			clearInput(44, y + 1, y + 1);
-			break;
-		}
-		else {
-			setColor(WHITE);
-			print(x + 25, y, " ");
-			print(x, y + 1, "Provide a correct option");
-		}
-	} // Column loop
-
-	// Direction (for manual setup)
-	if (getSetupMode() == 2) {
-		y += 2;
 		setColor(WHITE);
+		y = tempY;
+
+		// Rows (HORIZONTAL)
 		while (true) {
-			print(x, y, "Direction");
-			print(x, y + 1, PINK, "V");
-			print(WHITE, "(ertical) - ");
-			print(PINK, "H");
-			print(WHITE, "(orizontal)");
+			print(x, y, "> Select row (");
+			print(PINK, "A - J");
+			print(WHITE, ")");
 			print(GREEN, "> ");
-			inputDir = readLimitedInput(x + 27, y + 1);
+			inputRow = readLimitedInput(x + 22, y);
+			if (inputRow >= "A" && inputRow <= "J") {
+				char charToInt = inputRow[0];
+				row = charToInt - 65;
 
-			if (inputDir == "V" || inputDir == "H") {
-
-				if (inputDir == "V")
-					dir = 1;
-				else if (inputDir == "H")
-					dir = -1;
-
-				for (int i = 44; i < 80; ++i)
-					print(i, y + 2, " ");
+				clearInput(44, y + 1, y + 1);
 
 				break;
 			}
 			else {
 				setColor(WHITE);
-				print(x + 27, y + 1, " ");
-				print(x, y + 2, "Provide a correct option");
+				print(x + 22, y, " ");
+				print(x, y + 1, "Provide a correct option");
 			}
-		}
-		y++;
-	} // Direction loop
+		} // Row loop
 
-	// Confirming placement before doing anything else
-	y += 2;
-	setColor(WHITE);
-	while (true) {
-		print(x, y,  "Confirm placing (");
-		print(PINK,  "Y");
-		print(WHITE, "/");
-		print(PINK,  "N");
-		print(WHITE, ")");
-		print(GREEN, "> ");
-		confirmPlacement = readLimitedInput(x + 23, y);
+		  // Column (VERTICAL)
+		y += 2;
+		setColor(WHITE);
+		while (true) {
+			print(x, y, "> Select column (");
+			print(PINK, "0 - 9");
+			print(WHITE, ")");
+			print(GREEN, "> ");
+			col = stringToInt(inputCol, "Provide a correct option", btw, 0, 9, x + 25, y, 25, 1);
 
-		if (confirmPlacement == "N") {
-			return;
-		}
-		else if (!(confirmPlacement == "N" || confirmPlacement == "Y")) {
+			if (!(col == -1)) {
+				clearInput(44, y + 1, y + 1);
+				break;
+			}
+			else {
+				setColor(WHITE);
+				print(x + 25, y, " ");
+				print(x, y + 1, "Provide a correct option");
+			}
+		} // Column loop
+
+		  // Direction (for manual setup)
+		if (getSetupMode() == 2) {
+			y += 2;
 			setColor(WHITE);
-			print(x + 23, y, " ");
-			print(x, y + 1, "Provide a correct option");
-		}
-		else {
-			break;
-		}
-	} // Confirmation loop
+			while (true) {
+				print(x, y, "Direction");
+				print(x, y + 1, PINK, "V");
+				print(WHITE, "(ertical) - ");
+				print(PINK, "H");
+				print(WHITE, "(orizontal)");
+				print(GREEN, "> ");
+				inputDir = readLimitedInput(x + 27, y + 1);
+
+				if (inputDir == "V" || inputDir == "H") {
+
+					if (inputDir == "V")
+						dir = 1;
+					else if (inputDir == "H")
+						dir = -1;
+
+					for (int i = 44; i < 80; ++i)
+						print(i, y + 2, " ");
+
+					break;
+				}
+				else {
+					setColor(WHITE);
+					print(x + 27, y + 1, " ");
+					print(x, y + 2, "Provide a correct option");
+				}
+			}
+			y++;
+		} // Direction loop
+
+		  // Confirming placement before doing anything else
+		y += 2;
+		setColor(WHITE);
+		while (true) {
+			print(x, y, "Confirm placing (");
+			print(PINK, "Y");
+			print(WHITE, "/");
+			print(PINK, "N");
+			print(WHITE, ")");
+			print(GREEN, "> ");
+			confirmPlacement = readLimitedInput(x + 23, y);
+
+			if (confirmPlacement == "N") {
+				print(66, 11, " ");
+				print(69, 13, " ");
+				print(71, 16, " ");
+				print(67, 18, " ");
+				break;
+			}
+			else if (!(confirmPlacement == "N" || confirmPlacement == "Y")) {
+				setColor(WHITE);
+				print(x + 23, y, " ");
+				print(x, y + 1, "Provide a correct option");
+			}
+			else {
+				return;
+			}
+		} // Confirmation loop
+
+	}
 
 }
 
@@ -733,10 +744,10 @@ void Game::update() {
 		// Clearing previous text
 		clearInput(x, 0, 10);
 
-		/*print(44, 12, "  ");
+		print(44, 12, "  ");
 		print(44, 12, shipDirection);
 		print(44, 14, "Player: " + std::to_string(hitCounter[0]));
-		print(44, 16, "Computer: " + std::to_string(hitCounter[1]));*/
+		print(44, 16, "Computer: " + std::to_string(hitCounter[1]));
 
 		/// Player
 		if (turn % 2 == 0) {
@@ -744,30 +755,30 @@ void Game::update() {
 			print(x, y, YELLOW, "> YOUR TURN");
 			print(x, y + 1, GREEN, "Pick a position e.g. A-4, F-8, C-6");
 			print(x, y + 2, GREEN, "Try to hit your opponent's ships!");
-			//inputRow = "d";
-			//randomCoordinate(0, row, col, x, y + 1);
+			inputRow = "d";
+			randomCoordinate(0, row, col, x, y + 1);
 			
-			while (true) {
+			//while (true) {
 
-				// Getting a coordinate to hit
-				getCoordinate(inputRow, inputCol, row, col, x, y + 3);
+			//	// Getting a coordinate to hit
+			//	getCoordinate(inputRow, inputCol, row, col, x, y + 3);
 
-				// Making sure we don't hit the same position twice
-				if (confirmPlacement == "Y") {
-					if ((computerHitGrid[row][col] == 1) || (computerMissGrid[row][col] == 1)) {
-						print(x, y + 9, RED, "Position already hit. Try again");
-						print(x + 22, y + 3, " ");
-						print(x + 25, y + 5, " ");
-						print(x + 23, y + 7, " ");
-					}
-					else {
-						break;
-					}
-				}
-				else {
-					clearInput(x, 3, 10);
-				}
-			} // !while loop
+			//	// Making sure we don't hit the same position twice
+			//	if (confirmPlacement == "Y") {
+			//		if ((computerHitGrid[row][col] == 1) || (computerMissGrid[row][col] == 1)) {
+			//			print(x, y + 9, RED, "Position already hit. Try again");
+			//			print(x + 22, y + 3, " ");
+			//			print(x + 25, y + 5, " ");
+			//			print(x + 23, y + 7, " ");
+			//		}
+			//		else {
+			//			break;
+			//		}
+			//	}
+			//	else {
+			//		clearInput(x, 3, 10);
+			//	}
+			//} // !while loop
 
 		}
 		/// Computer
@@ -805,43 +816,43 @@ void Game::update() {
 		checkHit(row, col, turn);
 
 		// Asking for confirmation to continue
-		confirmRETURN(x, y + 6);
+		//confirmRETURN(x, y + 6);
 
 		// Asks if wants to keep playing
-		if (turn % 2 != 0) {
+		//if (turn % 2 != 0) {
 
-			clearInput(x, 0, 9);
+		//	clearInput(x, 0, 9);
 
-			setColor(WHITE);
-			while (true) {
-				print(x, y + 1, "> Continue playing? (");
-				print(PINK, "Y");
-				print(WHITE, "/");
-				print(PINK, "N");
-				print(WHITE, ")");
-				print(GREEN, "> ");
-				continuePlaying = readLimitedInput(x + 27, y + 1);
+		//	setColor(WHITE);
+		//	while (true) {
+		//		print(x, y + 1, "> Continue playing? (");
+		//		print(PINK, "Y");
+		//		print(WHITE, "/");
+		//		print(PINK, "N");
+		//		print(WHITE, ")");
+		//		print(GREEN, "> ");
+		//		continuePlaying = readLimitedInput(x + 27, y + 1);
 
-				if (continuePlaying == "N") {
-					return;
-				}
-				else if (!((continuePlaying == "N") || (continuePlaying == "Y"))) {
-					setColor(WHITE);
-					print(x + 27, y + 1, " ");
-					print(x, y + 2, "Provide a correct option");
-				}
-				else {
-					break;
-				}
-			} // !Confirmation loop
-		}
+		//		if (continuePlaying == "N") {
+		//			return;
+		//		}
+		//		else if (!((continuePlaying == "N") || (continuePlaying == "Y"))) {
+		//			setColor(WHITE);
+		//			print(x + 27, y + 1, " ");
+		//			print(x, y + 2, "Provide a correct option");
+		//		}
+		//		else {
+		//			break;
+		//		}
+		//	} // !Confirmation loop
+		//}
 
 		// Finding a winner
 		if (hitCounter[turn % 2] == 17) {
 			break;
 		}
 		else {
-			turn;;
+			turn++;
 		}
 
 	} // !while loop
@@ -860,448 +871,138 @@ void Game::randomCoordinate(int currentTurn, int _row, int  _col, int x, int y) 
 	// For knowing how many steps we should take
 	int howManySteps = 0;
 
-	// ------------------------------ AI ------------------------------ //
+	if (hasFoundShip == true) {
 
-	if (currentTurn % 2 == 1) {
+		if (playerHitGrid[_row][_col] == 1) {
 
-		if (hasFoundShip == true) {
+			if (hasBeenSunk(playerGrid[_row][_col] - 1, _row, _col, 1) == false) {
 
-			if (playerHitGrid[_row][_col] == 1) {
+				while (true) {
 
-				if (hasBeenSunk(playerGrid[_row][_col] - 1, _row, _col, 1) == false) {
+					// Vertical
+					if (shipDirection == 1) {
 
-					while (true) {
+						howManySteps = 0;
 
-						// Vertical
+						for (int i = 0; i < 10; ++i) {
+
+							if ((playerHitGrid[_row][i] == 1)) {
+
+								howManySteps++;
+
+							}
+
+						}
+
+						_col += howManySteps;
+
+						if ((_col > 9) || (playerMissGrid[_row][_col] == 1) || (playerHitGrid[_row][_col] == 1)) {
+
+							_col = _col - (howManySteps);
+
+						}
+						
+						if (_col < 0) {
+
+							_col += (howManySteps);
+
+						}
+
+					} // !Vertical
+					  // Horizontal
+					else if (shipDirection == -1) {
+
+						howManySteps = 0;
+
+						for (int i = 0; i < 10; ++i) {
+
+							if ((playerHitGrid[i][_col] == 1)) {
+
+								howManySteps++;
+
+							}
+
+						}
+
+						_row += howManySteps;
+
+						if ((_row > 9) || (playerMissGrid[_row][_col] == 1) || (playerHitGrid[_row][_col] == 1)) {
+
+							_row = _row - (howManySteps);
+
+						}
+						
+						if (_row < 0) {
+
+							_row += (howManySteps);
+
+						}
+
+					} // !Horizontal
+					  // Direction not yet known
+					else {
+
+						checkOpenPath(_row, _col);
+
+					} // !Direction not yet known
+
+					if ((playerHitGrid[_row][_col] == 1) || (playerMissGrid[_row][_col] == 1)) {
+
 						if (shipDirection == 1) {
 
-							howManySteps = 0;
-
-							for (int i = 0; i < 10; ++i) {
-
-								if ((playerHitGrid[_row][i] == 1)) {
-
-									howManySteps++;
-
-								}
-
-							}
-
-							_col += howManySteps;
-							
-							if ((_col > 9) || (playerMissGrid[_row][_col] == 1) || (playerHitGrid[_row][_col] == 1)) {
-
-								_col = _col - (howManySteps);
-
-								if (_col < 0) {
-
-									_col += (howManySteps);
-
-								}
-
-							}
-
-						} // !Vertical
-						// Horizontal
-						else if (shipDirection == -1) {
-
-							howManySteps = 0;
-
-							for (int i = 0; i < 10; ++i) {
-
-								if ((playerHitGrid[i][_col] == 1)) {
-
-									howManySteps++;
-
-								}
-
-							}
-
-							_row += howManySteps;
-
-							if ((_row > 9) || (playerMissGrid[_row][_col] == 1) || (playerHitGrid[_row][_col] == 1)) {
-
-								_row = _row - (howManySteps);
-
-								if (_row < 0) {
-
-									_row += (howManySteps);
-
-								}
-
-							}
-
-						} // !Horizontal
-						// Direction not yet known
-						else {
-
-							// new version
-							int hitChance = 0;
-
-							// Make sure we haven't hit the near positions
-
-							// Left
-							if ((playerMissGrid[_row - 1][_col] == 0) || (playerHitGrid[_row - 1][_col] == 0)) {
-								if (_row > 0) {
-									hitChance += 1;
-								}
-							}
-							// Down
-							if ((playerMissGrid[_row][_col + 1] == 0) || (playerHitGrid[_row][_col + 1] == 0)) {
-								if (_col < 9) {
-									hitChance += 3;
-								}
-							}
-							// Right
-							if ((playerMissGrid[_row + 1][_col] == 0) || (playerHitGrid[_row + 1][_col] == 0)) {
-								if (_row < 9) {
-									hitChance += 5;
-								}
-							}
-							// Up
-							if ((playerMissGrid[_row][_col - 1] == 0) || (playerHitGrid[_row][_col - 1] == 0)) {
-								if (_col > 0) {
-									hitChance += 7;
-								}
-							}
-
-
-							// Checking how many positions are available
-							// None
-							if (hitChance == 0) {
-
-								break;
-
-							}
-							// Left
-							else if (hitChance == 1) {
-
-								_row--;
-
-							}
-							// Down
-							else if (hitChance == 3) {
-
-								_col++;
-
-							}
-							// Left, Down
-							else if (hitChance == 4) {
-
-								if ((rand() % 2) % 2 == 0) {
-
-									_row--;
-
-								}
-								else {
-
-									_col++;
-
-								}
-
-							}
-							// Right
-							if (hitChance == 5) {
-
-								_row++;
-
-							}
-							// Left, Right
-							else if (hitChance == 6) {
-
-								if ((rand() % 2) % 2 == 0) {
-
-									_row--;
-
-								}
-								else {
-
-									_row++;
-
-								}
-
-							}
-							// Up
-							else if (hitChance == 7) {
+							if ((playerHitGrid[_row][_col - 1] == 1) && (_col > 0)) {
 
 								_col--;
 
 							}
-							// Left, Up - Right, Down
-							else if (hitChance == 8) {
+							else if ((playerHitGrid[_row][_col + 1] == 1) && (_col < 9)) {
 
-								// Left, Up
-								if (((playerMissGrid[_row][_col - 1] == 0) || (playerHitGrid[_row][_col - 1] == 0)) && (_row > 0 && _col > 0) ) {
-
-									if ((rand() % 2) % 2 == 0) {
-
-										_row--;
-
-									}
-									else {
-
-										_col--;
-
-									}
-
-								}
-								// Right, Down
-								else if (((playerMissGrid[_row][_col + 1] == 0) || (playerHitGrid[_row][_col + 1] == 0)) && (_row < 9 && _col < 9)) {
-
-									if ((rand() % 2) % 2 == 0) {
-
-										_row++;
-
-									}
-									else {
-
-										_col++;
-
-									}
-
-								}
+								_col--;
 
 							}
-							// Left, Down, Right
-							else if (hitChance == 9) {
 
-								if ((rand() % 2) % 2 == 0) {
+						}
 
-									_col++;
+						else if (shipDirection == -1) {
 
-								}
-								else {
+							if ((playerHitGrid[_row - 1][_col] == 1) && (_row > 0)) {
 
-									if ((rand() % 2) % 2 == 0) {
-
-										_row--;
-
-									}
-									else {
-
-										_row++;
-
-									}
-
-								}
-
-							}
-							// Down, Up
-							else if (hitChance == 10) {
-
-								if ((rand() % 2) % 2 == 0) {
-
-									_col++;
-
-								}
-								else {
-
-									_col--;
-
-								}
-
-							}
-							// Left, Down, Up
-							else if (hitChance == 11) {
-
-								if ((rand() % 2) % 2 == 0) {
-
-									_row--;
-
-								}
-								else {
-
-									if ((rand() % 2) % 2 == 0) {
-
-										_col++;
-
-									}
-									else {
-
-										_col--;
-
-									}
-
-								}
-
-							}
-							// Right, Up
-							else if (hitChance == 12) {
-
-								if ((rand() % 2) % 2 == 0) {
-
-									_row++;
-
-								}
-								else {
-
-									_col--;
-
-								}
-
-							}
-							// Left, Right, Up
-							else if (hitChance == 13) {
-
-								if ((rand() % 2) % 2 == 0) {
-
-									_col--;
-
-								}
-								else {
-
-									if ((rand() % 2) % 2 == 0) {
-
-										_row--;
-
-									}
-									else {
-
-										_row++;
-
-									}
-
-								}
-
-							}
-							// Down, Right, Up
-							else if (hitChance == 15) {
-
-								if ((rand() % 2) % 2 == 0) {
-
-									_row++;
-
-								}
-								else {
-
-									if ((rand() % 2) % 2 == 0) {
-
-										_col++;
-
-									}
-									else {
-
-										_col--;
-
-									}
-
-								}
-
-							}
-							// Left, Down, Right, Up
-							else if (hitChance == 16) {
-
-								int random = rand() % 4;
-
-								if (random == 0) {
-
-									_row--;
-
-								}
-								else if (random == 1) {
-
-									_col++;
-
-								}
-								else if (random == 2) {
-
-									_row++;
-
-								}
-								else if (random == 3) {
-
-									_col--;
-
-								}
+								_row--;
 
 							}
 
-						} // !Direction not yet known
+							else if ((playerHitGrid[_row + 1][_col] == 1) && (_row < 9)) {
 
-						
-
-						if ((playerHitGrid[_row][_col] == 1) || (playerMissGrid[_row][_col] == 1)) {
-
-							if (shipDirection == 1) {
-
-								if ((playerHitGrid[_row][_col - 1] == 1) && (_col > 0)) {
-
-									_col--;
-
-								}
-								else if ((playerHitGrid[_row][_col + 1] == 1) && (_col < 9)) {
-
-									_col--;
-									
-								}
+								_row--;
 
 							}
 
-							else if (shipDirection == -1) {                          
+						}
 
-								if ((playerHitGrid[_row - 1][_col] == 1) && (_row > 0)) { 
+					}
+					else {
 
-									_row--;
+						if ((_row >= 0 && _col >= 0) && (_row <= 9 && _col <= 9)) {
 
-								}  
-
-								else if ((playerHitGrid[_row + 1][_col] == 1) && (_row < 9)) {      
-
-									_row--;
-
-								}
-
-							}
+							break;
 
 						}
 						else {
-							if ((_row >= 0 && _col >= 0) && (_row <= 9 && _col <= 9)) {
-								break;
-							}
-							else {
-								shipDirection *= -1;
-							}
-							/*else {
-								print(44, 10, RED, "OUT OF BOUNDS");
-							}*/
+
+							shipDirection *= -1;
+
 						}
 
-					} // while (true)
+					}
 
-				} // if (hasBeenSunk(playerGrid[_row][_col] - 1, _row, _col, 1) == false)
+				} // while (true)
 
-			} // if (playerHitGrid[_row][_col] == 1)
+			} // if (hasBeenSunk(playerGrid[_row][_col] - 1, _row, _col, 1) == false)
 
-		} // if (hasFoundShip == true)
+		} // if (playerHitGrid[_row][_col] == 1)
 
-		  // ------------------------------ AI ------------------------------ //
-
-		// Working method
-		else {
-
-			while (true) {
-
-				_row = rand() % 10;
-				_col = rand() % 10;
-
-				if ((playerHitGrid[_row][_col] == 1) || (playerMissGrid[_row][_col] == 1)) {
-
-					_row = rand() % 10;
-					_col = rand() % 10;
-
-				}
-				else {
-
-					break;
-
-				}
-
-			}
-
-		}
-
-	}
-	// Player (Testing purposes only)
+	} // if (hasFoundShip == true)
+	// Hasn't found a ship
 	else {
 
 		while (true) {
@@ -1329,6 +1030,289 @@ void Game::randomCoordinate(int currentTurn, int _row, int  _col, int x, int y) 
 	inputRow[0] = charToString;
 	row = _row;
 	col = _col;
+
+}
+
+// Check for the next open path
+void Game::checkOpenPath(int& row, int& col) {
+
+	int hitChance = 0;
+
+	// Left
+	if ((playerMissGrid[row - 1][col] == 0) || (playerHitGrid[row - 1][col] == 0)) {
+		if (row > 0) {
+			hitChance += 1;
+		}
+	}
+	// Down
+	if ((playerMissGrid[row][col + 1] == 0) || (playerHitGrid[row][col + 1] == 0)) {
+		if (col < 9) {
+			hitChance += 3;
+		}
+	}
+	// Right
+	if ((playerMissGrid[row + 1][col] == 0) || (playerHitGrid[row + 1][col] == 0)) {
+		if (row < 9) {
+			hitChance += 5;
+		}
+	}
+	// Up
+	if ((playerMissGrid[row][col - 1] == 0) || (playerHitGrid[row][col - 1] == 0)) {
+		if (col > 0) {
+			hitChance += 7;
+		}
+	}
+
+
+	// Checking how many positions are available
+	// None
+	if (hitChance == 0) {
+
+		//break;
+
+	}
+	// Left
+	else if (hitChance == 1) {
+
+		row--;
+
+	}
+	// Down
+	else if (hitChance == 3) {
+
+		col++;
+
+	}
+	// Left, Down
+	else if (hitChance == 4) {
+
+		if ((rand() % 2) % 2 == 0) {
+
+			row--;
+
+		}
+		else {
+
+			col++;
+
+		}
+
+	}
+	// Right
+	if (hitChance == 5) {
+
+		row++;
+
+	}
+	// Left, Right
+	else if (hitChance == 6) {
+
+		if ((rand() % 2) % 2 == 0) {
+
+			row--;
+
+		}
+		else {
+
+			row++;
+
+		}
+
+	}
+	// Up
+	else if (hitChance == 7) {
+
+		col--;
+
+	}
+	// Left, Up - Right, Down
+	else if (hitChance == 8) {
+
+		// Left, Up
+		if (((playerMissGrid[row][col - 1] == 0) || (playerHitGrid[row][col - 1] == 0)) && (row > 0 && col > 0)) {
+
+			if ((rand() % 2) % 2 == 0) {
+
+				row--;
+
+			}
+			else {
+
+				col--;
+
+			}
+
+		}
+		// Right, Down
+		else if (((playerMissGrid[row][col + 1] == 0) || (playerHitGrid[row][col + 1] == 0)) && (row < 9 && col < 9)) {
+
+			if ((rand() % 2) % 2 == 0) {
+
+				row++;
+
+			}
+			else {
+
+				col++;
+
+			}
+
+		}
+
+	}
+	// Left, Down, Right
+	else if (hitChance == 9) {
+
+		if ((rand() % 2) % 2 == 0) {
+
+			col++;
+
+		}
+		else {
+
+			if ((rand() % 2) % 2 == 0) {
+
+				row--;
+
+			}
+			else {
+
+				row++;
+
+			}
+
+		}
+
+	}
+	// Down, Up
+	else if (hitChance == 10) {
+
+		if ((rand() % 2) % 2 == 0) {
+
+			col++;
+
+		}
+		else {
+
+			col--;
+
+		}
+
+	}
+	// Left, Down, Up
+	else if (hitChance == 11) {
+
+		if ((rand() % 2) % 2 == 0) {
+
+			row--;
+
+		}
+		else {
+
+			if ((rand() % 2) % 2 == 0) {
+
+				col++;
+
+			}
+			else {
+
+				col--;
+
+			}
+
+		}
+
+	}
+	// Right, Up
+	else if (hitChance == 12) {
+
+		if ((rand() % 2) % 2 == 0) {
+
+			row++;
+
+		}
+		else {
+
+			col--;
+
+		}
+
+	}
+	// Left, Right, Up
+	else if (hitChance == 13) {
+
+		if ((rand() % 2) % 2 == 0) {
+
+			col--;
+
+		}
+		else {
+
+			if ((rand() % 2) % 2 == 0) {
+
+				row--;
+
+			}
+			else {
+
+				row++;
+
+			}
+
+		}
+
+	}
+	// Down, Right, Up
+	else if (hitChance == 15) {
+
+		if ((rand() % 2) % 2 == 0) {
+
+			row++;
+
+		}
+		else {
+
+			if ((rand() % 2) % 2 == 0) {
+
+				col++;
+
+			}
+			else {
+
+				col--;
+
+			}
+
+		}
+
+	}
+	// Left, Down, Right, Up
+	else if (hitChance == 16) {
+
+		int random = rand() % 4;
+
+		if (random == 0) {
+
+			row--;
+
+		}
+		else if (random == 1) {
+
+			col++;
+
+		}
+		else if (random == 2) {
+
+			row++;
+
+		}
+		else if (random == 3) {
+
+			col--;
+
+		}
+
+	}
 
 }
 

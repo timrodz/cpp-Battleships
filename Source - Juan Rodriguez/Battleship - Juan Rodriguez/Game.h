@@ -105,6 +105,8 @@ public:
 	// Creating a random coordinate (for the enemy)
 	void randomCoordinate(int currentTurn, int row, int col, int x, int y);
 
+	void checkOpenPath(int& _row, int& _col);
+
 	// Checking collision
 	void checkHit(int row, int col, int currentTurn);
 
