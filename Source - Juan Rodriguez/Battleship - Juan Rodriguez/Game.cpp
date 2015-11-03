@@ -270,10 +270,15 @@ void Game::drawSetupScreen() {
 	for (int i = 0; i < 19; ++i) {
 		for (int j = 0; j < 10; ++j) {
 			print(i + 1, j + 2, DARKTEAL, "~");
-			print(i + 23, j + 2, DARKTEAL, "~");
+			if (i < 10) {
+				print(i * 2 + 23, j + 2, DARKTEAL, "~");
+				//print(i * 2 + 24, j + 2, "|");
+			}
 			DEBUG_IF(1) {
 				print(i + 1, j + 15, DARKTEAL, "~");
-				print(i + 23, j + 15, DARKTEAL, "~");
+				if (i < 10) {
+					print(i * 2 + 23, j + 15, DARKTEAL, "~");
+				}
 			}
 		}
 	}
@@ -744,10 +749,10 @@ void Game::update() {
 		// Clearing previous text
 		clearInput(x, 0, 10);
 
-		print(44, 12, "  ");
+		/*print(44, 12, "  ");
 		print(44, 12, shipDirection);
 		print(44, 14, "Player: " + std::to_string(hitCounter[0]));
-		print(44, 16, "Computer: " + std::to_string(hitCounter[1]));
+		print(44, 16, "Computer: " + std::to_string(hitCounter[1]));*/
 
 		/// Player
 		if (turn % 2 == 0) {
@@ -755,30 +760,30 @@ void Game::update() {
 			print(x, y, YELLOW, "> YOUR TURN");
 			print(x, y + 1, GREEN, "Pick a position e.g. A-4, F-8, C-6");
 			print(x, y + 2, GREEN, "Try to hit your opponent's ships!");
-			inputRow = "d";
-			randomCoordinate(0, row, col, x, y + 1);
+			//inputRow = "d";
+			//randomCoordinate(0, row, col, x, y + 1);
 			
-			//while (true) {
+			while (true) {
 
-			//	// Getting a coordinate to hit
-			//	getCoordinate(inputRow, inputCol, row, col, x, y + 3);
+				// Getting a coordinate to hit
+				getCoordinate(inputRow, inputCol, row, col, x, y + 3);
 
-			//	// Making sure we don't hit the same position twice
-			//	if (confirmPlacement == "Y") {
-			//		if ((computerHitGrid[row][col] == 1) || (computerMissGrid[row][col] == 1)) {
-			//			print(x, y + 9, RED, "Position already hit. Try again");
-			//			print(x + 22, y + 3, " ");
-			//			print(x + 25, y + 5, " ");
-			//			print(x + 23, y + 7, " ");
-			//		}
-			//		else {
-			//			break;
-			//		}
-			//	}
-			//	else {
-			//		clearInput(x, 3, 10);
-			//	}
-			//} // !while loop
+				// Making sure we don't hit the same position twice
+				if (confirmPlacement == "Y") {
+					if ((computerHitGrid[row][col] == 1) || (computerMissGrid[row][col] == 1)) {
+						print(x, y + 9, RED, "Position already hit. Try again");
+						print(x + 22, y + 3, " ");
+						print(x + 25, y + 5, " ");
+						print(x + 23, y + 7, " ");
+					}
+					else {
+						break;
+					}
+				}
+				else {
+					clearInput(x, 3, 10);
+				}
+			} // !while loop
 
 		}
 		/// Computer
@@ -816,36 +821,36 @@ void Game::update() {
 		checkHit(row, col, turn);
 
 		// Asking for confirmation to continue
-		//confirmRETURN(x, y + 6);
+		confirmRETURN(x, y + 6);
 
 		// Asks if wants to keep playing
-		//if (turn % 2 != 0) {
+		if (turn % 2 != 0) {
 
-		//	clearInput(x, 0, 9);
+			clearInput(x, 0, 9);
 
-		//	setColor(WHITE);
-		//	while (true) {
-		//		print(x, y + 1, "> Continue playing? (");
-		//		print(PINK, "Y");
-		//		print(WHITE, "/");
-		//		print(PINK, "N");
-		//		print(WHITE, ")");
-		//		print(GREEN, "> ");
-		//		continuePlaying = readLimitedInput(x + 27, y + 1);
+			setColor(WHITE);
+			while (true) {
+				print(x, y + 1, "> Continue playing? (");
+				print(PINK, "Y");
+				print(WHITE, "/");
+				print(PINK, "N");
+				print(WHITE, ")");
+				print(GREEN, "> ");
+				continuePlaying = readLimitedInput(x + 27, y + 1);
 
-		//		if (continuePlaying == "N") {
-		//			return;
-		//		}
-		//		else if (!((continuePlaying == "N") || (continuePlaying == "Y"))) {
-		//			setColor(WHITE);
-		//			print(x + 27, y + 1, " ");
-		//			print(x, y + 2, "Provide a correct option");
-		//		}
-		//		else {
-		//			break;
-		//		}
-		//	} // !Confirmation loop
-		//}
+				if (continuePlaying == "N") {
+					return;
+				}
+				else if (!((continuePlaying == "N") || (continuePlaying == "Y"))) {
+					setColor(WHITE);
+					print(x + 27, y + 1, " ");
+					print(x, y + 2, "Provide a correct option");
+				}
+				else {
+					break;
+				}
+			} // !Confirmation loop
+		}
 
 		// Finding a winner
 		if (hitCounter[turn % 2] == 17) {
@@ -863,7 +868,7 @@ void Game::update() {
 }
 
 // Generating a random coordinate for the computer
-void Game::randomCoordinate(int currentTurn, int _row, int  _col, int x, int y) {
+void Game::randomCoordinate(int currentTurn, int tempRow, int  tempCol, int x, int y) {
 
 	bool canExitLoop = false;
 	// for parsing our row as a letter
@@ -873,38 +878,67 @@ void Game::randomCoordinate(int currentTurn, int _row, int  _col, int x, int y) 
 
 	if (hasFoundShip == true) {
 
-		if (playerHitGrid[_row][_col] == 1) {
+		if (playerHitGrid[tempRow][tempCol] == 1) {
 
-			if (hasBeenSunk(playerGrid[_row][_col] - 1, _row, _col, 1) == false) {
+			if (hasBeenSunk(playerGrid[tempRow][tempCol] - 1, tempRow, tempCol, 1) == false) {
 
 				while (true) {
 
 					// Vertical
 					if (shipDirection == 1) {
 
-						howManySteps = 0;
+						while (true) {
 
-						for (int i = 0; i < 10; ++i) {
+							// returns true if can hit the position up to where it previously hit
+							bool canGoUp = (tempCol > 0) && (playerHitGrid[tempRow][tempCol] == 1) && 
+								((playerMissGrid[tempRow][tempCol - 1] == 0) && (playerHitGrid[tempRow][tempCol - 1] == 0));
 
-							if ((playerHitGrid[_row][i] == 1)) {
+							// returns true if can hit the position down to where it previously hit
+							bool canGoDown = (tempCol < 9) && (playerHitGrid[tempRow][tempCol] == 1) && 
+								((playerMissGrid[tempRow][tempCol + 1] == 0) && (playerHitGrid[tempRow][tempCol + 1] == 0));
 
-								howManySteps++;
+							if (canGoUp && !canGoDown) {
+
+								tempCol--;
+								break;
 
 							}
+							else if (!canGoUp && canGoDown) {
 
-						}
+								tempCol++;
+								break;
 
-						_col += howManySteps;
+							}
+							else if (canGoUp && canGoDown) {
 
-						if ((_col > 9) || (playerMissGrid[_row][_col] == 1) || (playerHitGrid[_row][_col] == 1)) {
+								if ((rand() % 2) % 2 == 0) {
 
-							_col = _col - (howManySteps);
+									tempCol--;
 
-						}
-						
-						if (_col < 0) {
+								}
+								else {
 
-							_col += (howManySteps);
+									tempCol++;
+
+								}
+
+								break;
+
+							}
+							else {
+
+								if (tempCol < 9) {
+
+									tempCol++;
+
+								}
+								else {
+
+									tempCol = 0;
+
+								}
+
+							}
 
 						}
 
@@ -912,29 +946,58 @@ void Game::randomCoordinate(int currentTurn, int _row, int  _col, int x, int y) 
 					  // Horizontal
 					else if (shipDirection == -1) {
 
-						howManySteps = 0;
+						while (true) {
 
-						for (int i = 0; i < 10; ++i) {
+							// returns true if can hit the position left to where it previously hit
+							bool canGoLeft =  (tempRow > 0) && (playerHitGrid[tempRow][tempCol] == 1) && 
+								((playerMissGrid[tempRow - 1][tempCol] == 0) && (playerHitGrid[tempRow - 1][tempCol] == 0));
 
-							if ((playerHitGrid[i][_col] == 1)) {
+							// returns true if can hit the position right to where it previously hit
+							bool canGoRight = (tempRow < 9) && (playerHitGrid[tempRow][tempCol] == 1) && 
+								((playerMissGrid[tempRow + 1][tempCol] == 0) && (playerHitGrid[tempRow + 1][tempCol] == 0));
 
-								howManySteps++;
+							if (canGoLeft && !canGoRight) {
+
+								tempRow--;
+								break;
 
 							}
+							else if (!canGoLeft && canGoRight) {
 
-						}
+								tempRow++;
+								break;
 
-						_row += howManySteps;
+							}
+							else if (canGoLeft && canGoRight) {
 
-						if ((_row > 9) || (playerMissGrid[_row][_col] == 1) || (playerHitGrid[_row][_col] == 1)) {
+								if ((rand() % 2) % 2 == 0) {
 
-							_row = _row - (howManySteps);
+									tempRow--;
 
-						}
-						
-						if (_row < 0) {
+								}
+								else {
 
-							_row += (howManySteps);
+									tempRow++;
+
+								}
+
+								break;
+
+							}
+							else {
+
+								if (tempRow < 9) {
+
+									tempRow++;
+
+								}
+								else {
+
+									tempRow = 0;
+
+								}
+
+							}
 
 						}
 
@@ -942,47 +1005,18 @@ void Game::randomCoordinate(int currentTurn, int _row, int  _col, int x, int y) 
 					  // Direction not yet known
 					else {
 
-						checkOpenPath(_row, _col);
+						checkForOpenPath(tempRow, tempCol);
 
 					} // !Direction not yet known
 
-					if ((playerHitGrid[_row][_col] == 1) || (playerMissGrid[_row][_col] == 1)) {
+					if ((playerHitGrid[tempRow][tempCol] == 1) || (playerMissGrid[tempRow][tempCol] == 1)) {
 
-						if (shipDirection == 1) {
-
-							if ((playerHitGrid[_row][_col - 1] == 1) && (_col > 0)) {
-
-								_col--;
-
-							}
-							else if ((playerHitGrid[_row][_col + 1] == 1) && (_col < 9)) {
-
-								_col--;
-
-							}
-
-						}
-
-						else if (shipDirection == -1) {
-
-							if ((playerHitGrid[_row - 1][_col] == 1) && (_row > 0)) {
-
-								_row--;
-
-							}
-
-							else if ((playerHitGrid[_row + 1][_col] == 1) && (_row < 9)) {
-
-								_row--;
-
-							}
-
-						}
+						// Repeat the process until it finds a direction to hit
 
 					}
 					else {
 
-						if ((_row >= 0 && _col >= 0) && (_row <= 9 && _col <= 9)) {
+						if ((tempRow >= 0 && tempCol >= 0) && (tempRow <= 9 && tempCol <= 9)) {
 
 							break;
 
@@ -995,25 +1029,27 @@ void Game::randomCoordinate(int currentTurn, int _row, int  _col, int x, int y) 
 
 					}
 
-				} // while (true)
+				} // !While loop
 
-			} // if (hasBeenSunk(playerGrid[_row][_col] - 1, _row, _col, 1) == false)
+			} // !Ship hasn't been sunk
 
-		} // if (playerHitGrid[_row][_col] == 1)
+		} // !Has hit the position
 
-	} // if (hasFoundShip == true)
+	} // !Has found the ship
 	// Hasn't found a ship
 	else {
 
 		while (true) {
 
-			_row = rand() % 10;
-			_col = rand() % 10;
+			//srand((unsigned int)time(NULL));
 
-			if ((playerHitGrid[_row][_col] == 1) || (playerMissGrid[_row][_col] == 1)) {
+			tempRow = rand() % 10;
+			tempCol = rand() % 10;
 
-				_row = rand() % 10;
-				_col = rand() % 10;
+			if ((playerHitGrid[tempRow][tempCol] == 1) || (playerMissGrid[tempRow][tempCol] == 1)) {
+
+				tempRow = rand() % 10;
+				tempCol = rand() % 10;
 
 			}
 			else {
@@ -1026,49 +1062,58 @@ void Game::randomCoordinate(int currentTurn, int _row, int  _col, int x, int y) 
 
 	}
 
-	charToString = _row + 65;
+	charToString = tempRow + 65;
 	inputRow[0] = charToString;
-	row = _row;
-	col = _col;
+	row = tempRow;
+	col = tempCol;
 
 }
 
 // Check for the next open path
-void Game::checkOpenPath(int& row, int& col) {
+void Game::checkForOpenPath(int& row, int& col) const {
 
 	int hitChance = 0;
 
 	// Left
-	if ((playerMissGrid[row - 1][col] == 0) || (playerHitGrid[row - 1][col] == 0)) {
+	if ((playerMissGrid[row - 1][col] == 0) && (playerHitGrid[row - 1][col] == 0)) {
 		if (row > 0) {
 			hitChance += 1;
 		}
 	}
 	// Down
-	if ((playerMissGrid[row][col + 1] == 0) || (playerHitGrid[row][col + 1] == 0)) {
+	if ((playerMissGrid[row][col + 1] == 0) && (playerHitGrid[row][col + 1] == 0)) {
 		if (col < 9) {
 			hitChance += 3;
 		}
 	}
 	// Right
-	if ((playerMissGrid[row + 1][col] == 0) || (playerHitGrid[row + 1][col] == 0)) {
+	if ((playerMissGrid[row + 1][col] == 0) && (playerHitGrid[row + 1][col] == 0)) {
 		if (row < 9) {
 			hitChance += 5;
 		}
 	}
 	// Up
-	if ((playerMissGrid[row][col - 1] == 0) || (playerHitGrid[row][col - 1] == 0)) {
+	if ((playerMissGrid[row][col - 1] == 0) && (playerHitGrid[row][col - 1] == 0)) {
 		if (col > 0) {
 			hitChance += 7;
 		}
 	}
 
-
-	// Checking how many positions are available
 	// None
 	if (hitChance == 0) {
 
-		//break;
+		if (playerHitGrid[row + 1][col] == 1) {
+			row++;
+		}
+		else if (playerHitGrid[row - 1][col] == 1) {
+			row--;
+		}
+		else if (playerHitGrid[row][col + 1] == 1) {
+			col++;
+		}
+		else if (playerHitGrid[row][col - 1] == 1) {
+			col--;
+		}
 
 	}
 	// Left
@@ -1314,6 +1359,14 @@ void Game::checkOpenPath(int& row, int& col) {
 
 	}
 
+	if (row < 0) {
+		row = 0;
+	}
+
+	if (col < 0) {
+		col = 0;
+	}
+
 }
 
 // Checking which player has been hit
@@ -1409,68 +1462,55 @@ void Game::checkHit(int row, int col, int currentTurn) {
 }
 
 // Direction of the ship
-int Game::getShipDirection(int row, int col) {
+int Game::getShipDirection(int row, int col) const {
 
-	// Vertical
-	if ((playerHitGrid[row][col - 1] == 1) || (playerHitGrid[row][col + 1] == 1)) {
+	int direction = 0;
 
-		if (col > 0) {
+	char currentShipCode = getShipCode(playerGrid[row][col] - 1);
+	char upperShipCode = getShipCode(playerGrid[row][col - 1] - 1);
+	char lowerShipCode = getShipCode(playerGrid[row][col + 1] - 1);
+	char rightShipCode = getShipCode(playerGrid[row + 1][col] - 1);
+	char leftShipCode = getShipCode(playerGrid[row - 1][col] - 1);	
+	
+	// Vertical and horizontall
+	if (((playerHitGrid[row][col - 1] == 1) && (col > 0)) || ((playerHitGrid[row][col + 1] == 1) && (col < 9)) ||
+		((playerHitGrid[row - 1][col] == 1) && (row > 0)) || ((playerHitGrid[row + 1][col] == 1) && (row < 9))) {
 
-			if ((getShipCode(playerGrid[row][col] - 1)) == (getShipCode(playerGrid[row][col - 1] - 1)) ||
-				(getShipCode(playerGrid[row][col] - 1)) == (getShipCode(playerGrid[row][col + 1] - 1))) {
+		if ((col == 0) && (currentShipCode == lowerShipCode)) {
 
-				return 1;
+			direction = 1;
 
-			}
-			else {
+		}
+		else if ((col > 0) && (currentShipCode == upperShipCode || currentShipCode == lowerShipCode)) {
 
-				return 0;
+			direction = 1;
 
-			}
+		}
+		else if ((row == 0) && (currentShipCode == rightShipCode)) {
+
+			direction = -1;
+
+		}
+		else if ((row > 0) && (currentShipCode == rightShipCode || currentShipCode == leftShipCode)) {
+
+			direction = -1;
 
 		}
 		else {
 
-			return 0;
+			direction = 0;
 
 		}
-
 	}
-	// Horizontal
-	else if ((playerHitGrid[row - 1][col] == 1) || (playerHitGrid[row + 1][col] == 1)) {
-
-		if (row > 0) {
-
-			if ((getShipCode(playerGrid[row][col] - 1)) == (getShipCode(playerGrid[row - 1][col] - 1)) ||
-				(getShipCode(playerGrid[row][col] - 1)) == (getShipCode(playerGrid[row + 1][col] - 1))) {
-
-				return -1;
-
-			}
-			else {
-
-				return 0;
-
-			}
-
-		}
-		else {
-
-			return 0;
-
-		}
-
-	}
-	// Not yet known
-	else if ((playerHitGrid[row][col - 1] == 0) || (playerHitGrid[row][col + 1] == 0) ||
-			((playerHitGrid[row - 1][col] == 0) || (playerHitGrid[row + 1][col] == 0))) {
-
-		return 0;
-
-	}
+	// No direction found
 	else {
-		return 0;
+
+		direction = 0;
+
 	}
+
+	return direction;
+
 }
 
 // Checking for which ship has been sunk by comparing the ship's hit counter with the ship's size
@@ -1515,7 +1555,7 @@ bool Game::hasBeenSunk(int shipCode, int row, int col, int turn) {
 }
 
 // Display winner and message
-void Game::getWinner(int currentPlayer) {
+void Game::getWinner(int currentPlayer) const {
 	clearInput(44, 0, 24);
 	if (currentPlayer == 0) {
 		print(44, 1, YELLOW, "> YOU WIN!");
@@ -1528,7 +1568,7 @@ void Game::getWinner(int currentPlayer) {
 }
 
 // Drawing ship information
-void Game::drawShipInfo(int x, int y) {
+void Game::drawShipInfo(int x, int y) const {
 	print(x + 10, y + 18, GREEN, "SHIP INFORMATION");
 
 	// Ship info

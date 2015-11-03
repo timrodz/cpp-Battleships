@@ -105,22 +105,22 @@ public:
 	// Creating a random coordinate (for the enemy)
 	void randomCoordinate(int currentTurn, int row, int col, int x, int y);
 
-	void checkOpenPath(int& _row, int& _col);
+	void checkForOpenPath(int& _row, int& _col) const;
 
 	// Checking collision
 	void checkHit(int row, int col, int currentTurn);
 
 	// Direction of the ship
-	int getShipDirection(int row, int col);
+	int getShipDirection(int row, int col) const;
 
 	// Knowing if the ship has been sunk or not
 	bool hasBeenSunk(int shipCode, int row, int col, int turn);
 
 	// When a winner is found
-	void getWinner(int currentPlayer);
+	void getWinner(int currentPlayer) const;
 
 	// Drawing ship information
-	void drawShipInfo(int x, int y);
+	void drawShipInfo(int x, int y) const;
 
 	/// GAMEOVER ///
 	// Drawing the state
