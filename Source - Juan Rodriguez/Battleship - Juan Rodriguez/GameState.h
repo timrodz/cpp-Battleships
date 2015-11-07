@@ -19,32 +19,33 @@
 #include "Game.h"
 
 class GameState {
-/// Public methods
 public:
-
 	// Draws according to the current state
-	void GameState::drawState(int state);
+	void drawState(int _iState);
 	// Sets the current state
-	void setState(int state);
+	void setSortMode(int _iState);
 	// Gets the current state
-	int getState() const;
+	int getSortMode() const;
 
-/// Private member variables
 private:
-
-	Game game;
-
-	enum State {
-		MENU     = 0,
-		SETUP    = 1,
-		GAME     = 2,
+	// Our states
+	enum eState {
+		MENU = 0,
+		SETUP = 1,
+		GAME = 2,
 		GAMEOVER = 3,
-		QUIT     = 4,
-		CREDITS  = 5
+		QUIT = 4,
+		CREDITS = 5
 	};
 
-	int currentState;
+	// the current state
+	int iCurrentState;
 
+	// Instace of the game for drawing the current state
+	Game game;
 };
+
+
+
 
 #endif /* GameState.h */

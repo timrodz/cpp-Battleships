@@ -16,8 +16,11 @@
 #ifndef __SCREEN_H__
 #define __SCREEN_H__
 
+// cancel flag
+const int CANCEL = -1;
+
 // 16 Bit color palette (used in the 'setColor' function)
-enum Color {
+enum eColor {
 	BLACK = 0,
 	DARKBLUE = 1,
 	DARKGREEN = 2,
@@ -45,7 +48,7 @@ enum Color {
 // -> outNIB: outside not including both sides (<  ||  >)
 // -> outNIL: outside not including LEFT side  (<  || >=)
 // -> outNIR: outside not including RIGHT side (<= ||  >)
-enum Comparison {
+enum eComparison {
 	eq,
 	btw,
 	btwNIB,
@@ -60,36 +63,32 @@ enum Comparison {
 // Going to a desired position in the screen
 // SCREEN DIMENSIONS: 80 wide by 24 tall
 // Optional: can hide the cursor
-void gotoxy(int x, int y, bool hideCursor);
+void gotoxy(int _iX, int _iY, bool _bHideCursor);
 
 // Setting the color for our screen
-void setColor(Color c);
+void setColor(eColor _eColor);
 
 // Clearing the console on the right side of the screen
-void clearInput(int x, int yMin, int yMax);
+void clearInput(int _iX, int _iYmin, int _iYmax);
 
 // String to Integer conversion
-int stringToInt(std::string& inputSort, // String to read
-	std::string phrase,                 // Text to display when errors occur
-	Comparison comp,                    // Type of comparison
-	int minValue, int maxValue,         // range of comparison
-	int x, int y,                       // coordinates to print
-	int xOffset, int yOffset);          // Offsets for printing (when errors occur)
-
-// Printing a string/character (with overloading)
-void print(int x, int y, Color stringColor, std::string s);
-void print(int x, int y, std::string s);
-void print(Color stringColor, std::string s);
-void print(int x, int y, Color charColor, char c);
-void print(int x, int y, char c);
-void print(Color charColor, char c);
-void print(int x, int y, int number);
+int stringToInt(std::string& _rStrInput, std::string _strPhrase, eComparison _eComp,
+	int _iMinValue, int _iMaxValue, int _iX, int _iY, int _iXoffset, int _iYoffset);
 
 // Limits the input to only one character
 // by using the '_getch()' function
-std::string readLimitedInput(int x, int y);
+std::string readLimitedInput(int _iX, int _iY);
 
-// Alternative to system("pause")
-void confirmRETURN(int x, int y);
+// Prompts for confirmation
+void confirmRETURN(int _iX, int _iY);
+
+// Printing a string/character (with overloading)
+void print(int _iX, int _iY, eColor _eColor, std::string _string);
+void print(int _iX, int _iY, std::string _string);
+void print(eColor _eColor, std::string _string);
+void print(int _iX, int _iY, eColor _eColor, char _character);
+void print(int _iX, int _iY, char _character);
+void print(eColor _eColor, char _character);
+void print(int _iX, int _iY, int number);
 
 #endif /* Screen.h */

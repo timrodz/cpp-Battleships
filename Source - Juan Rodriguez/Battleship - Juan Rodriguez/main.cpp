@@ -26,7 +26,7 @@ int main() {
 	Game game;
 	GameState gameState;
 
-	enum State {
+	enum eState {
 		MENU = 0,
 		SETUP = 1,
 		GAME = 2,
@@ -36,98 +36,98 @@ int main() {
 	};
 	
 	// Options for each menu
-	int menuOption = 0;
-	int sortOption = 0;
+	int iMenuOption = 0;
+	int iSortOption = 0;
 	//int winner = -1;
-	char gameOverOption = '\0';
+	char cGameOverOption = '\0';
 
 	// Initial state
-	gameState.setState(MENU);
+	gameState.setSortMode(MENU);
 	
 	while (true) {
 
 		// Menu
-		while (gameState.getState() == MENU) {
+		while (gameState.getSortMode() == MENU) {
 
 			gameState.drawState(MENU);
-			menuOption = game.setMenu();
+			iMenuOption = game.setMenu();
 
-			if (menuOption == 1) {
-				gameState.setState(SETUP);
+			if (iMenuOption == 1) {
+				gameState.setSortMode(SETUP);
 			}
-			else if (menuOption == 2) {
-				gameState.setState(CREDITS);
+			else if (iMenuOption == 2) {
+				gameState.setSortMode(CREDITS);
 			}
-			else if (menuOption == 3) {
-				gameState.setState(GAMEOVER);
+			else if (iMenuOption == 3) {
+				gameState.setSortMode(GAMEOVER);
 			}
 
 		} // Menu
 
 		// Setup
-		while (gameState.getState() == SETUP) {
+		while (gameState.getSortMode() == SETUP) {
 
 			gameState.drawState(SETUP);
 
-			sortOption = game.setSetupMode();
+			iSortOption = game.setSetupMode();
 
-			if (sortOption == 1) {
-				game.sortAuto();
-				gameState.setState(GAME);
+			if (iSortOption == 1) {
+				game.sortAutomatic();
+				gameState.setSortMode(GAME);
 			}
-			else if (sortOption == 2) {
+			else if (iSortOption == 2) {
 				game.sortManual();
-				gameState.setState(GAME);
+				gameState.setSortMode(GAME);
 			}
-			else if (sortOption == 0) {
-				gameState.setState(MENU);
+			else if (iSortOption == 0) {
+				gameState.setSortMode(MENU);
 			}
 
-			if (game.getState() == "~/.") {
-				gameState.setState(SETUP);
+			if (game.getSortMode() == "X") {
+				gameState.setSortMode(SETUP);
 			}
 
 		} // !Setup
 		
 		// Game
-		while (gameState.getState() == GAME) {
+		while (gameState.getSortMode() == GAME) {
 
 			gameState.drawState(GAME);
 
-			game.update();
+			game.updateGame();
 
-			if (game.getState() == "~/.") {
-				gameState.setState(SETUP);
+			if (game.getSortMode() == "X") {
+				gameState.setSortMode(SETUP);
 			}
 			else {
-				gameState.setState(GAMEOVER);
+				gameState.setSortMode(GAMEOVER);
 			}
 
 		} // !Game
 
 		// Game over
-		while (gameState.getState() == GAMEOVER) {
+		while (gameState.getSortMode() == GAMEOVER) {
 
 			gameState.drawState(GAMEOVER);
-			gameOverOption = game.setGameOver().at(0);
+			cGameOverOption = game.setGameOver().at(0);
 
-			if (gameOverOption == 'Y') {
-				gameState.setState(MENU);
+			if (cGameOverOption == 'Y') {
+				gameState.setSortMode(MENU);
 			}
-			else if (gameOverOption == 'N') {
-				gameState.setState(QUIT);
+			else if (cGameOverOption == 'N') {
+				gameState.setSortMode(QUIT);
 			}			
 
 		} // !Game over
 
 		// Credits
-		while (gameState.getState() == CREDITS) {
+		while (gameState.getSortMode() == CREDITS) {
 			gameState.drawState(CREDITS);
-			gameState.setState(MENU);
+			gameState.setSortMode(MENU);
 		} // !Credits 
 
 		// Quit
-		if (gameState.getState() == QUIT) {
+		if (gameState.getSortMode() == QUIT) {
 			gameState.drawState(QUIT);
 			break;
 		} // !Quit

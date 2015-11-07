@@ -15,33 +15,51 @@
 #include "GameState.h"
 
 // Drawing the state's correspondant screen
-void GameState::drawState(int state) {
-	if (state == MENU) {
+void GameState::drawState(int _iState) {
+
+	if (_iState == MENU) {
+
 		game.drawMenuScreen();
+
 	}
-	else if (state == SETUP) {
+	else if (_iState == SETUP) {
+
 		game.drawSetupScreen();
+
 	}
-	else if (state == GAME) {
+	else if (_iState == GAME) {
+
 		game.drawGameScreen();
+
 	}
-	else if (state == GAMEOVER) {
+	else if (_iState == GAMEOVER) {
+
 		game.drawGameOverScreen();
+
 	}
-	else if (state == QUIT) {
+	else if (_iState == QUIT) {
+
 		game.drawQuitScreen();
+
 	}
-	else if (state == CREDITS) {
+	else if (_iState == CREDITS) {
+
 		game.drawCreditsScreen();
+
 	}
+
 }
 
 // Setting the state
-void GameState::setState(int state) {
-	currentState = state;
+void GameState::setSortMode(int _iState) {
+
+	iCurrentState = _iState;
+
 }
 
 // Getting the current state
-int GameState::getState() const {
-	return currentState;
+int GameState::getSortMode() const {
+
+	return iCurrentState;
+
 }

@@ -17,13 +17,17 @@
 #define __GAME_H__
 
 // Library includes
+#include <iostream>
 #include <string>
+#include <ctime>
+#include <windows.h>
 
 // Local includes
 #include "Screen.h"
 
 class Game {
 public:
+
 	Game();
 	~Game();
 
@@ -38,17 +42,17 @@ public:
 	int getPlacedShips(int) const;
 	
 	// This method checks if either the player and the AI can place ships
-	bool canPlaceShips(int i) const;
+	bool canPlaceShips(int _iCode) const;
 
 	// Getting the size of the ships
-	int getShipSize(int shipType) const;
+	int getShipSize(int _iCode) const;
 	
 	// Getting the code (character that represents) for the current ship
-	char getShipCode(int code) const;
+	char getShipCode(int _iCode) const;
 
 	/// Navigation ///
-	void setState(std::string setState);
-	std::string getState() const;
+	void setSortMode(std::string _strSortMode);
+	std::string getSortMode() const;
 
 	/// MENU ///
 	// Drawing the state
@@ -71,56 +75,58 @@ public:
 	void printAvailableShips();
 
 	// Automatically sorting the grid
-	void sortAuto();
+	void sortAutomatic();
 
 	// Manually sorting the grid
 	void sortManual();
 
 /// Only can be accessed through our sortAuto and sortManual methods
 private:
+
 	// This will only be called inside the setup
-	void createShipAuto(int player);
-	void createShipManual();
+	void setShipAuto(int _iPlayer);
+	void setShipManual();
 
 /// Rest of the public functions
 public:
+
 	// Gets our coordinates (row, column, direction)
 	// It'll only get direction and confirmation for placement if the player's on manual setup
-	void getCoordinate(std::string& inputRow, std::string& inputCol, int& row, int& col, int x, int y);
+	void setFireCoordinates(std::string& _rStrInput, int& _riRow, int& _riCol, int _iX, int _iY);
 
 	// This method checks for collisions and available spaces
 	// FEATURES:
 	// -> Knows which direction to place the ship
 	// -> Knows if it's the player's or computer's turn
 	// -> Places ships on the screen accordingly and sets the ship unavailable after it's been used
-	void drawShip(int dir, int row, int col, int SHIP_ID, int player);
+	void createShip(int _iDir, int _iRow, int _iCol, int _iShipID, int _iPlayer);
 
 	/// GAME ///
 	// Drawing the state
 	void drawGameScreen();
 
 	// Game loop
-	void update();
+	void updateGame();
 
 	// Creating a random coordinate (for the enemy)
-	void randomCoordinate(int currentTurn, int row, int col, int x, int y);
+	void setRandomCoordinates(int _iCurrentTurn, int _iTempRow, int  _iTempCol);
 
-	void checkForOpenPath(int& _row, int& _col) const;
+	void findOpenPath(int& _riRow, int& _riCol) const;
 
 	// Checking collision
-	void checkHit(int row, int col, int currentTurn);
+	void checkForHit(int _iRow, int _iCol, int _iTurn);
 
 	// Direction of the ship
-	int getShipDirection(int row, int col) const;
+	int getShipDirection(int _iRow, int _iCol) const;
 
 	// Knowing if the ship has been sunk or not
-	bool hasBeenSunk(int shipCode, int row, int col, int turn);
+	bool isShipSunkYet(int _shipCode, int _iRow, int _iCol, int _iTurn);
 
 	// When a winner is found
-	void getWinner(int currentPlayer) const;
+	void getWinner(int _iPlayer) const;
 
 	// Drawing ship information
-	void drawShipInfo(int x, int y) const;
+	void drawShipInfo(int _iX, int _iY) const;
 
 	/// GAMEOVER ///
 	// Drawing the state
@@ -141,73 +147,69 @@ public:
 	/// Private members
 private:
 	// Keeping track of our turns
-	int turn;
+	int iTurn;
 
 	// To make sure we can only set up a maximum of 5 ships (Per player)
 	static const int MAX_SHIPS;
 
 	// Reading the ship to place
-	std::string inputRow;
-	std::string inputShip;
-	int shipModel;
-
-	// MENU
-	int menuOption;
+	std::string strInput;
+	int iShipModel;;
 
 	// SETUP
-	std::string inputSort, inputCol;
-	std::string inputDir, confirmPlacement;
-	int setupMode;
-	int row, col;
-	char dir;
+	int iSetupMode;
+	int iRow, iCol;
+	char cLetter;
+	char cDir;
 
 	// GAME
-	std::string continuePlaying;
+	std::string strContinuePlaying;
 	// Determining how many hits has our ship received
 	int shipHitCounter;
-	bool hasFoundShip;
-	int shipDirection;
+	bool bHasFoundShip;
+	int iShipDirection;
 	int shipsLeft[2];
-	int hitRow;
-	int hitCol;
+	int iHitRow;
+	int iHitCol;
 
 	// GAME OVER
 	std::string confirmExit;
 
 	// Number of ships currently used 
 	// (stores up to whatever value *setAvailableShip* takes as parameter)
-	int currentShipsPlaced[2];
+	int iCurrentShipsPlaced[2];
 
 	// To check whether or not the player has canceled the ship placement
-	std::string cancelSort;
+	std::string strCancelSort;
 
 	// Check whether or not we've a free space
-	bool spaceTaken;
+	bool bSpaceTaken;
 
 	// our 2D grid
 	// We use sizes of 12 because we also need to check if the ship goes out of bounds
 	// And our grid gets *imaginarily* drawn from the starting point (1, 1) until (13, 13)
-	int playerGrid[12][12];
-	int computerGrid[12][12];
+	int iPlayerGrid[12][12];
+	int iComputerGrid[12][12];
 
 	// hit/miss grid for the player
-	int playerHitGrid[10][10];
-	int playerMissGrid[10][10];
+	int iPlayerHitGrid[10][10];
+	int iPlayerMissGrid[10][10];
 
 	// hit/miss for the computer
-	int computerHitGrid[10][10];
-	int computerMissGrid[10][10];
+	int iComputerHitGrid[10][10];
+	int iComputerMissGrid[10][10];
 
 	// Determining who has won
-	int hitCounter[2];
+	int iHitCounter[2];
 	
 	// playerShips and computerShips will store the used ships
-	int* currentPlayerShip;
-	int* currentComputerShip;
+	int* piCurrentPlayerShip;
+	int* piCurrentComputerShip;
 	
 	// shipAvailable prints the available ships (to place) according to
 	// playerShips and computerShips
 	static const std::string SHIP_NAME[5];
+
 };
 
 #endif /* Game.h */

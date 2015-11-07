@@ -19,9 +19,6 @@
 #include <sstream>
 #include <Windows.h>
 
-// Cancelling input
-#define CANCEL -1
-
 // Local includes
 #include "Screen.h"
 
@@ -30,172 +27,188 @@ HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 CONSOLE_CURSOR_INFO cursor;
 COORD coord;
 
-// Going to a desired position in the screen
-// SCREEN DIMENSIONS: 80 wide by 24 tall
-// Optional: can hide the cursor
-void gotoxy(int x, int y, bool hideCursor) {
-	if (hideCursor == true) {
+// Going to a desired position in the screen and hiding the cursor if desired
+// @param _iX the 'x' coordinate to print at
+// @param _iY the 'y' coordinate to print at
+// @param _bHideCursor true for hiding, false for showing
+// @return void
+void gotoxy(int _iX, int _iY, bool _bHideCursor) {
+
+	if (_bHideCursor == true) {
+
 		cursor.bVisible = false;
 		cursor.dwSize = 1;
+
 	}
 	else {
+
 		cursor.bVisible = true;
 		cursor.dwSize = 20;
+
 	}
 	std::cout.flush();
-	coord.X = x;
-	coord.Y = y;
+	coord.X = _iX;
+	coord.Y = _iY;
 	SetConsoleCursorInfo(consoleHandle, &cursor);
 	SetConsoleCursorPosition(consoleHandle, coord);
+
 }
 
 // Setting the color for our screen
-void setColor(Color c) {
-	SetConsoleTextAttribute(consoleHandle, c);
+// @param _color the color code
+// @return void
+void setColor(eColor _eColor) {
+
+	SetConsoleTextAttribute(consoleHandle, _eColor);
+
 }
 
 // Clearing the console on the right side of the screen
-void clearInput(int x, int yMin, int yMax) {
-	for (int i = x; i < 80; ++i) {
-		for (int j = yMin; j <= yMax; ++j) {
+// @param _iX the 'x' coordinate to print at
+// @param _iYmin the minimum 'y' position to start clearing
+// @param _iYmax the maximum 'y' position to stop clearing at
+// @return void
+void clearInput(int _iX, int _iYmin, int _iYmax) {
+
+	for (int i = _iX; i < 80; ++i) {
+
+		for (int j = _iYmin; j <= _iYmax; ++j) {
+
 			print(i, j, " ");
+
 		}
+
 	}
-	gotoxy(x, 0, true);
+
+	gotoxy(_iX, 0, true);
+
 }
 
 /// Reading strings
 // String to Int with Comparison
-int stringToInt(std::string& inputSort, // String to read
-	std::string phrase,                 // Text to display when errors occur
-	Comparison comp,                    // Type of comparison
-	int minValue, int maxValue,         // range of comparison
-	int x, int y,                       // coordinates to print
-	int xOffset, int yOffset) {         // Offsets for printing (when errors occur)
+// @param _rStrInput the string to read
+// @param _strPhrase the phrase to display if an error occurs
+// @param _eComp the type of comparison to make
+// @param _iMinValue the minimum value to compare
+// @param _iMaxValue the maximum value to compare
+// @param _iX the 'x' coordinate to print at
+// @param _iY the 'y' coordinate to print at
+// @param _iXoffset the 'x' offset to clear the previous text
+// @param _iYoffset the 'y' offset to display the error text (_strPhrase)
+int stringToInt(std::string& _rStrInput, std::string _strPhrase, eComparison _eComp,
+	int _iMinValue, int _iMaxValue, int _iX, int _iY, int _iXoffset, int _iYoffset) {
 
-	int numberToCompare;
+	int iNumberToCompare;
 
 	while (true) {
 		// Accessing the string value of a stringstream is done by calling the 'str' method
-		std::stringstream ss(readLimitedInput(x, y));
+		std::stringstream ss(readLimitedInput(_iX, _iY));
 		setColor(WHITE);
 		if (ss.str() == "~/.") {
+
 			return CANCEL;
+
 		}
 		// string stream to integer shift
-		if (ss >> numberToCompare) {
-			switch (comp) {
+		if (ss >> iNumberToCompare) {
+			switch (_eComp) {
 			// Equal
 			case eq:
-				if ((numberToCompare == minValue) || (numberToCompare == maxValue)) {
-					return numberToCompare;
+				if ((iNumberToCompare == _iMinValue) || (iNumberToCompare == _iMaxValue)) {
+
+					return iNumberToCompare;
+
 				}
 				break;
 			// Between
 			case btw:
-				if ((numberToCompare >= minValue) || (numberToCompare <= maxValue)) {
-					return numberToCompare;
+				if ((iNumberToCompare >= _iMinValue) || (iNumberToCompare <= _iMaxValue)) {
+
+					return iNumberToCompare;
+
 				}
 				break;
 			// Between not included both
 			case btwNIB:
-				if ((numberToCompare > minValue) || (numberToCompare < maxValue)) {
-					return numberToCompare;
+				if ((iNumberToCompare > _iMinValue) || (iNumberToCompare < _iMaxValue)) {
+
+					return iNumberToCompare;
+
 				}
 				break;
 			// Between not included left
 			case btwNIL:
-				if ((numberToCompare > minValue) || (numberToCompare <= maxValue)) {
-					return numberToCompare;
+				if ((iNumberToCompare > _iMinValue) || (iNumberToCompare <= _iMaxValue)) {
+
+					return iNumberToCompare;
+
 				}
 				break;
 			// Between not included right
 			case btwNIR:
-				if ((numberToCompare >= minValue) || (numberToCompare < maxValue)) {
-					return numberToCompare;
+				if ((iNumberToCompare >= _iMinValue) || (iNumberToCompare < _iMaxValue)) {
+
+					return iNumberToCompare;
+
 				}
 				break;
 			// Outside
 			case out:
-				if (!(numberToCompare <= minValue) || (numberToCompare >= maxValue)) {
-					return numberToCompare;
+				if (!(iNumberToCompare <= _iMinValue) || (iNumberToCompare >= _iMaxValue)) {
+
+					return iNumberToCompare;
+
 				}
 				break;
 			// Outside not included both
 			case outNIB:
-				if (!(numberToCompare < minValue) || (numberToCompare > maxValue)) {
-					return numberToCompare;
+				if (!(iNumberToCompare < _iMinValue) || (iNumberToCompare > _iMaxValue)) {
+
+					return iNumberToCompare;
+
 				}
 				break;
 			// Outside not included left
 			case outNIL:
-				if (!(numberToCompare < minValue) || (numberToCompare >= maxValue)) {
-					return numberToCompare;
+				if (!(iNumberToCompare < _iMinValue) || (iNumberToCompare >= _iMaxValue)) {
+
+					return iNumberToCompare;
+
 				}
 				break;
 			// Outside not included right
 			case outNIR:
-				if (!(numberToCompare <= minValue) || (numberToCompare > maxValue)) {
-					return numberToCompare;
+				if (!(iNumberToCompare <= _iMinValue) || (iNumberToCompare > _iMaxValue)) {
+
+					return iNumberToCompare;
+
 				}
+
 				break;
+
 			} // switch end
-			print(x, y, " ");
-			print(x - xOffset, y + yOffset, phrase);
+
+			print(_iX, _iY, " ");
+			print(_iX - _iXoffset, _iY + _iYoffset, _strPhrase);
+
 		}
 		else {
-			print(x, y, " ");
-			print(x - xOffset, y + yOffset, phrase);
+
+			print(_iX, _iY, " ");
+			print(_iX - _iXoffset, _iY + _iYoffset, _strPhrase);
+
 		}
+
 	} // while end
-}
 
-/// Printing strings
-void print(int x, int y, Color stringColor, std::string s) {
-	setColor(stringColor);
-	gotoxy(x, y, true);
-	std::cout << s;
-	setColor(WHITE);
-}
-
-void print(int x, int y, std::string s) {
-	gotoxy(x, y, true);
-	std::cout << s;
-}
-
-void print(Color stringColor, std::string s) {
-	setColor(stringColor);
-	std::cout << s;
-	setColor(WHITE);
-}
-
-/// Printing characters
-void print(int x, int y, Color charColor, char c) {
-	setColor(charColor);
-	gotoxy(x, y, true);
-	std::cout << c;
-	setColor(WHITE);
-}
-
-void print(int x, int y, char c) {
-	gotoxy(x, y, true);
-	std::cout << c;
-}
-
-void print(Color charColor, char c) {
-	setColor(charColor);
-	std::cout << c;
-	setColor(WHITE);
-}
-
-/// Printing integers
-void print(int x, int y, int number) {
-	gotoxy(x, y, true);
-	std::cout << number;
 }
 
 // Limiting the input to only one character
-std::string readLimitedInput(int x, int y) {
+// @param _iX the 'x' coordinate to print at
+// @param _iY the 'y' coordinate to print at
+// @return void
+std::string readLimitedInput(int _iX, int _iY) {
+
 	// Limit of characters
 	const int LIMIT = 1;
 	// counter of characters
@@ -205,16 +218,19 @@ std::string readLimitedInput(int x, int y) {
 	// Our character that we'll append to 's'
 	char charToRead;
 	while (true) {
-		gotoxy(x, y, false);
+
+		gotoxy(_iX, _iY, false);
 		charToRead = _getch();
 		// We make sure we've more than 0 letters 
 		// (otherwise we'll be popping the string at index -1)
 		if ((charToRead == 8) && (stringIndex > 0)) {
+
 			stringToAppend.pop_back();
 			// Iterate back to our last position
 			stringIndex--;
-			x--;
-			print(x, y, " ");
+			_iX--;
+			print(_iX, _iY, " ");
+
 		}
 		else if ((charToRead == 8) && (stringIndex == 0)) {
 			// Nothing happens (on purpose)
@@ -223,44 +239,132 @@ std::string readLimitedInput(int x, int y) {
 			// This limits the amount of characters that
 			// our input can receive (change 1 to desired limit)
 			if (stringIndex != LIMIT) {
-				
+
 				// we push our character into our stack
 				stringToAppend.push_back(charToRead);
 				stringIndex++;
-				x++;
+				_iX++;
 				// Uppercase conversion
 				// We do this for every non-digit using the isdigit(std::string) function
 				// index - 1 because arrays are counted starting from 0, otherwise we can just use 'index'
-				if ( !( isdigit( stringToAppend[stringIndex] ) ) ) {
+				if (!(isdigit(stringToAppend[stringIndex]))) {
+
 					stringToAppend[stringIndex - 1] = toupper(stringToAppend[stringIndex - 1]);
+
 				}
 
 			}
+
 		}
-		gotoxy(x - 1, y, false);
+		gotoxy(_iX - 1, _iY, false);
 		if (stringIndex - 1 != -1) {
+
 			setColor(PINK);
 			std::cout << stringToAppend[stringIndex - 1];
+
 		}
 
 		if (charToRead == 13) {
-			//Beep(750, 100);
+
 			return stringToAppend;
+
 		}
 		else if (charToRead == 27) {
+
 			return "~/.";
+
 		}
+
 	}
+
 }
 
-// Alternative to system("pause");
-void confirmRETURN(int x, int y) {
-	print(x, y, WHITE, "Press ");
+// Prompts for confirmation
+// @param _iX the 'x' coordinate to print at
+// @param _iY the 'y' coordinate to print at
+// @return void
+void confirmRETURN(int _iX, int _iY) {
+
+	print(_iX, _iY, WHITE, "Press ");
 	print(GREEN, "ENTER / RETURN");
 	print(WHITE, " to continue> ");
 	while (true) {
+
 		if (_getch() == 13) {
+
 			break;
+
 		}
+
 	}
+
+}
+
+///////////////////////////////////////////////////////////////////////////
+// Since the next functions are just for printing,                       //
+// The arguments are the same through the overloads where they're found  //
+// @param _iX the 'x' coordinate to print at                             //
+// @param _iY the 'y' coordinate to print at                             //
+// @param _eColor the color to set the text                              //
+// @param _string the phrase to display                                  //
+// @param _character the character to display                            //
+// @param _int the integer to display                                    //
+///////////////////////////////////////////////////////////////////////////
+
+/// > Printing strings
+void print(int _iX, int _iY, eColor _eColor, std::string _string) {
+
+	setColor(_eColor);
+	gotoxy(_iX, _iY, true);
+	std::cout << _string;
+	setColor(WHITE);
+
+}
+
+void print(int _iX, int _iY, std::string _string) {
+
+	gotoxy(_iX, _iY, true);
+	std::cout << _string;
+
+}
+
+void print(eColor _eColor, std::string _string) {
+
+	setColor(_eColor);
+	std::cout << _string;
+	setColor(WHITE);
+
+}
+
+/// > Printing characters
+void print(int _iX, int _iY, eColor _eColor, char _character) {
+
+	setColor(_eColor);
+	gotoxy(_iX, _iY, true);
+	std::cout << _character;
+	setColor(WHITE);
+
+}
+
+void print(int _iX, int _iY, char _character) {
+
+	gotoxy(_iX, _iY, true);
+	std::cout << _character;
+
+}
+
+void print(eColor _eColor, char _character) {
+
+	setColor(_eColor);
+	std::cout << _character;
+	setColor(WHITE);
+
+}
+
+/// > Printing integers
+void print(int _iX, int _iY, int _int) {
+
+	gotoxy(_iX, _iY, true);
+	std::cout << _int;
+
 }
