@@ -31,22 +31,22 @@ public:
 	Game();
 	~Game();
 
-	/// game start ///
+	/// GAME START ///
 	// Setup of our 12x12 grid (extra spaces for collision checking)
 	void setCollisionGrid();
 
 	// Resets the ships
 	void setAvailableShips();
-	
+
 	// Get number of ships
 	int getPlacedShips(int) const;
-	
+
 	// This method checks if either the player and the AI can place ships
 	bool canPlaceShips(int _iCode) const;
 
 	// Getting the size of the ships
 	int getShipSize(int _iCode) const;
-	
+
 	// Getting the code (character that represents) for the current ship
 	char getShipCode(int _iCode) const;
 
@@ -64,15 +64,15 @@ public:
 	/// SETUP ///
 	// Drawing the state
 	void drawSetupScreen();
-	
+
 	// Automatic or manual setup of the ships
 	int setSetupMode();
-	
+
 	// Get setup mode
 	int getSetupMode() const;
 
 	// Get the current available ships
-	void printAvailableShips();
+	void printAvailableShips() const;
 
 	// Automatically sorting the grid
 	void sortAutomatic();
@@ -80,14 +80,14 @@ public:
 	// Manually sorting the grid
 	void sortManual();
 
-/// Only can be accessed through our sortAuto and sortManual methods
+	/// Only can be accessed through our sortAuto and sortManual methods
 private:
 
 	// This will only be called inside the setup
 	void setShipAuto(int _iPlayer);
 	void setShipManual();
 
-/// Rest of the public functions
+	/// Rest of the public functions
 public:
 
 	// Gets our coordinates (row, column, direction)
@@ -108,9 +108,13 @@ public:
 	// Game loop
 	void updateGame();
 
+	// Checking if a ship has been left behind while hitting
+	void checkForMissingShips();
+
 	// Creating a random coordinate (for the enemy)
 	void setRandomCoordinates(int _iCurrentTurn, int _iTempRow, int  _iTempCol);
 
+	// Finding the next open path
 	void findOpenPath(int& _riRow, int& _riCol) const;
 
 	// Checking collision
@@ -120,7 +124,7 @@ public:
 	int getShipDirection(int _iRow, int _iCol) const;
 
 	// Knowing if the ship has been sunk or not
-	bool isShipSunkYet(int _shipCode, int _iRow, int _iCol, int _iTurn);
+	bool isShipSunkYet(int _iShipCode, int _iRow, int _iCol, int _iTurn);
 
 	// When a winner is found
 	void getWinner(int _iPlayer) const;
@@ -142,7 +146,7 @@ public:
 	void drawCreditsScreen();
 
 	/// Borders of the screen
-	void drawScreenBorders();
+	void drawScreenBorders() const;
 
 	/// Private members
 private:
@@ -201,11 +205,11 @@ private:
 
 	// Determining who has won
 	int iHitCounter[2];
-	
+
 	// playerShips and computerShips will store the used ships
 	int* piCurrentPlayerShip;
 	int* piCurrentComputerShip;
-	
+
 	// shipAvailable prints the available ships (to place) according to
 	// playerShips and computerShips
 	static const std::string SHIP_NAME[5];

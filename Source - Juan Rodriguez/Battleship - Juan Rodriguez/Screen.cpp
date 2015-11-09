@@ -112,7 +112,7 @@ int stringToInt(std::string& _rStrInput, std::string _strPhrase, eComparison _eC
 		// string stream to integer shift
 		if (ss >> iNumberToCompare) {
 			switch (_eComp) {
-			// Equal
+				// Equal
 			case eq:
 				if ((iNumberToCompare == _iMinValue) || (iNumberToCompare == _iMaxValue)) {
 
@@ -120,7 +120,7 @@ int stringToInt(std::string& _rStrInput, std::string _strPhrase, eComparison _eC
 
 				}
 				break;
-			// Between
+				// Between
 			case btw:
 				if ((iNumberToCompare >= _iMinValue) || (iNumberToCompare <= _iMaxValue)) {
 
@@ -128,7 +128,7 @@ int stringToInt(std::string& _rStrInput, std::string _strPhrase, eComparison _eC
 
 				}
 				break;
-			// Between not included both
+				// Between not included both
 			case btwNIB:
 				if ((iNumberToCompare > _iMinValue) || (iNumberToCompare < _iMaxValue)) {
 
@@ -136,7 +136,7 @@ int stringToInt(std::string& _rStrInput, std::string _strPhrase, eComparison _eC
 
 				}
 				break;
-			// Between not included left
+				// Between not included left
 			case btwNIL:
 				if ((iNumberToCompare > _iMinValue) || (iNumberToCompare <= _iMaxValue)) {
 
@@ -144,7 +144,7 @@ int stringToInt(std::string& _rStrInput, std::string _strPhrase, eComparison _eC
 
 				}
 				break;
-			// Between not included right
+				// Between not included right
 			case btwNIR:
 				if ((iNumberToCompare >= _iMinValue) || (iNumberToCompare < _iMaxValue)) {
 
@@ -152,7 +152,7 @@ int stringToInt(std::string& _rStrInput, std::string _strPhrase, eComparison _eC
 
 				}
 				break;
-			// Outside
+				// Outside
 			case out:
 				if (!(iNumberToCompare <= _iMinValue) || (iNumberToCompare >= _iMaxValue)) {
 
@@ -160,7 +160,7 @@ int stringToInt(std::string& _rStrInput, std::string _strPhrase, eComparison _eC
 
 				}
 				break;
-			// Outside not included both
+				// Outside not included both
 			case outNIB:
 				if (!(iNumberToCompare < _iMinValue) || (iNumberToCompare > _iMaxValue)) {
 
@@ -168,7 +168,7 @@ int stringToInt(std::string& _rStrInput, std::string _strPhrase, eComparison _eC
 
 				}
 				break;
-			// Outside not included left
+				// Outside not included left
 			case outNIL:
 				if (!(iNumberToCompare < _iMinValue) || (iNumberToCompare >= _iMaxValue)) {
 
@@ -176,7 +176,7 @@ int stringToInt(std::string& _rStrInput, std::string _strPhrase, eComparison _eC
 
 				}
 				break;
-			// Outside not included right
+				// Outside not included right
 			case outNIR:
 				if (!(iNumberToCompare <= _iMinValue) || (iNumberToCompare > _iMaxValue)) {
 

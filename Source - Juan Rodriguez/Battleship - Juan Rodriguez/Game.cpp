@@ -16,7 +16,7 @@
 #ifdef _DEBUG
 #define IF_DEBUG(cond) if(cond)
 #else
-#define IF_DEBUG(cond)
+#define IF_DEBUG(cond) if(false)
 #endif
 
 // This include
@@ -141,6 +141,7 @@ void Game::setAvailableShips() {
 }
 
 // Gets the currently placed ships
+// @param _iCode the code of the ship
 // @return int
 int Game::getPlacedShips(int _iCode) const {
 
@@ -149,14 +150,16 @@ int Game::getPlacedShips(int _iCode) const {
 }
 
 // Checks whether or not can keep placing ships
+// @param _iCode the code of the ship
 // @return boolean
-bool Game::canPlaceShips(int _ship) const {
+bool Game::canPlaceShips(int _iCode) const {
 
-	return (getPlacedShips(_ship) > 0);
+	return (getPlacedShips(_iCode) > 0);
 
 }
 
 // Gets the size of the ship
+// @param _iCode the code of the ship
 // @return int
 int Game::getShipSize(int _iCode) const {
 
@@ -176,6 +179,7 @@ int Game::getShipSize(int _iCode) const {
 }
 
 // Gets the code of the ship
+// @param _iCode the code of the ship
 // @return char
 char Game::getShipCode(int _iCode) const {
 
@@ -195,6 +199,7 @@ char Game::getShipCode(int _iCode) const {
 }
 
 // Setting the sort mode
+// @param _strSortMode the string to set the sort mode to
 // @return void
 void Game::setSortMode(std::string _strSortMode) {
 
@@ -433,7 +438,7 @@ int Game::getSetupMode() const {
 
 // Print available ships
 // @return void
-void Game::printAvailableShips() {
+void Game::printAvailableShips() const {
 
 	setColor(WHITE);
 	print(44, 0, "Available ships (ESC to exit)");
@@ -651,7 +656,7 @@ void Game::setFireCoordinates(std::string& _rStrInput, int& _riRow, int& _riCol,
 
 		} // Row loop
 
-		// Column (VERTICAL)
+		  // Column (VERTICAL)
 		_iY += 2;
 		setColor(WHITE);
 		while (true) {
@@ -698,7 +703,7 @@ void Game::setFireCoordinates(std::string& _rStrInput, int& _riRow, int& _riCol,
 					if (_rStrInput == "V") {
 
 						cDir = 1;
-					
+
 					}
 					else if (_rStrInput == "H") {
 
@@ -932,7 +937,7 @@ void Game::createShip(int _iDir, int _iRow, int _iCol, int _iShipID, int _iPlaye
 		}
 		// Computer
 		else if (_iPlayer == 1) {
-	
+
 			piCurrentComputerShip[_iShipID] = 1;
 
 		}
@@ -1023,6 +1028,8 @@ void Game::updateGame() {
 		/// Computer
 		else {
 
+			checkForMissingShips();
+
 			print(x, y, YELLOW, "> OPPONENT'S TURN");
 			if (bHasFoundShip == true) {
 
@@ -1106,8 +1113,33 @@ void Game::updateGame() {
 
 	} // !while loop
 
-	// Now that we found a winner, we display it
+	  // Now that we found a winner, we display it
 	getWinner(iTurn % 2);
+
+}
+
+// Checking if a ship has been left behind
+// @return void
+void Game::checkForMissingShips() {
+
+	for (int i = 0; i < 10; ++i) {
+
+		for (int j = 0; j < 10; ++j) {
+
+			// If it finds a ship that was hit but hasn't been sunk, hit it again
+			if ((bHasFoundShip == false) && (iPlayerHitGrid[i][j] == 1) && ((isShipSunkYet(iPlayerGrid[i][j] - 1, i, j, 1) == false))) {
+
+				bHasFoundShip = true;
+				iHitRow = i;
+				iHitCol = j;
+				iShipDirection = getShipDirection(i, j);
+				return;
+
+			}
+
+		}
+
+	}
 
 }
 
@@ -1128,158 +1160,154 @@ void Game::setRandomCoordinates(int _iTurn, int _iTempRow, int  _iTempCol) {
 
 		if (iPlayerHitGrid[_iTempRow][_iTempCol] == 1) {
 
-			if (isShipSunkYet(iPlayerGrid[_iTempRow][_iTempCol] - 1, _iTempRow, _iTempCol, 1) == false) {
+			while (true) {
 
-				while (true) {
+				// Vertical
+				if (iShipDirection == 1) {
 
-					// Vertical
-					if (iShipDirection == 1) {
+					while (true) {
 
-						while (true) {
+						// returns true if can hit the position up to where it previously hit
+						bool canGoUp = (_iTempCol > 0) && (iPlayerHitGrid[_iTempRow][_iTempCol] == 1) &&
+							((iPlayerMissGrid[_iTempRow][_iTempCol - 1] == 0) && (iPlayerHitGrid[_iTempRow][_iTempCol - 1] == 0));
 
-							// returns true if can hit the position up to where it previously hit
-							bool canGoUp = (_iTempCol > 0) && (iPlayerHitGrid[_iTempRow][_iTempCol] == 1) &&
-								((iPlayerMissGrid[_iTempRow][_iTempCol - 1] == 0) && (iPlayerHitGrid[_iTempRow][_iTempCol - 1] == 0));
+						// returns true if can hit the position down to where it previously hit
+						bool canGoDown = (_iTempCol < 9) && (iPlayerHitGrid[_iTempRow][_iTempCol] == 1) &&
+							((iPlayerMissGrid[_iTempRow][_iTempCol + 1] == 0) && (iPlayerHitGrid[_iTempRow][_iTempCol + 1] == 0));
 
-							// returns true if can hit the position down to where it previously hit
-							bool canGoDown = (_iTempCol < 9) && (iPlayerHitGrid[_iTempRow][_iTempCol] == 1) &&
-								((iPlayerMissGrid[_iTempRow][_iTempCol + 1] == 0) && (iPlayerHitGrid[_iTempRow][_iTempCol + 1] == 0));
+						if (canGoUp && !canGoDown) {
 
-							if (canGoUp && !canGoDown) {
+							_iTempCol--;
+							break;
+
+						}
+						else if (!canGoUp && canGoDown) {
+
+							_iTempCol++;
+							break;
+
+						}
+						else if (canGoUp && canGoDown) {
+
+							if ((rand() % 2) % 2 == 0) {
 
 								_iTempCol--;
-								break;
 
 							}
-							else if (!canGoUp && canGoDown) {
+							else {
 
 								_iTempCol++;
-								break;
 
 							}
-							else if (canGoUp && canGoDown) {
-
-								if ((rand() % 2) % 2 == 0) {
-
-									_iTempCol--;
-
-								}
-								else {
-
-									_iTempCol++;
-
-								}
-
-								break;
-
-							}
-							else {
-
-								if (_iTempCol < 9) {
-
-									_iTempCol++;
-
-								}
-								else {
-
-									_iTempCol = 0;
-
-								}
-
-							}
-
-						}
-
-					} // !Vertical
-					  // Horizontal
-					else if (iShipDirection == -1) {
-
-						while (true) {
-
-							// returns true if can hit the position left to where it previously hit
-							bool canGoLeft = (_iTempRow > 0) && (iPlayerHitGrid[_iTempRow][_iTempCol] == 1) &&
-								((iPlayerMissGrid[_iTempRow - 1][_iTempCol] == 0) && (iPlayerHitGrid[_iTempRow - 1][_iTempCol] == 0));
-
-							// returns true if can hit the position right to where it previously hit
-							bool canGoRight = (_iTempRow < 9) && (iPlayerHitGrid[_iTempRow][_iTempCol] == 1) &&
-								((iPlayerMissGrid[_iTempRow + 1][_iTempCol] == 0) && (iPlayerHitGrid[_iTempRow + 1][_iTempCol] == 0));
-
-							if (canGoLeft && !canGoRight) {
-
-								_iTempRow--;
-								break;
-
-							}
-							else if (!canGoLeft && canGoRight) {
-
-								_iTempRow++;
-								break;
-
-							}
-							else if (canGoLeft && canGoRight) {
-
-								if ((rand() % 2) % 2 == 0) {
-
-									_iTempRow--;
-
-								}
-								else {
-
-									_iTempRow++;
-
-								}
-
-								break;
-
-							}
-							else {
-
-								if (_iTempRow < 9) {
-
-									_iTempRow++;
-
-								}
-								else {
-
-									_iTempRow = 0;
-
-								}
-
-							}
-
-						}
-
-					} // !Horizontal
-					  // Direction not yet known
-					else {
-
-						findOpenPath(_iTempRow, _iTempCol);
-
-					} // !Direction not yet known
-
-					if ((iPlayerHitGrid[_iTempRow][_iTempCol] == 1) || (iPlayerMissGrid[_iTempRow][_iTempCol] == 1)) {
-
-						// Repeat the process until it finds a direction to hit
-
-					}
-					else {
-
-						if ((_iTempRow >= 0 && _iTempCol >= 0) && (_iTempRow <= 9 && _iTempCol <= 9)) {
 
 							break;
 
 						}
 						else {
 
-							iShipDirection *= -1;
+							if (_iTempCol < 9) {
+
+								_iTempCol++;
+
+							}
+							else {
+
+								_iTempCol = 0;
+
+							}
 
 						}
 
 					}
 
-				} // !While loop
+				} // !Vertical
+				  // Horizontal
+				else if (iShipDirection == -1) {
 
-			} // !Ship hasn't been sunk
+					while (true) {
+
+						// returns true if can hit the position left to where it previously hit
+						bool canGoLeft = (_iTempRow > 0) && (iPlayerHitGrid[_iTempRow][_iTempCol] == 1) &&
+							((iPlayerMissGrid[_iTempRow - 1][_iTempCol] == 0) && (iPlayerHitGrid[_iTempRow - 1][_iTempCol] == 0));
+
+						// returns true if can hit the position right to where it previously hit
+						bool canGoRight = (_iTempRow < 9) && (iPlayerHitGrid[_iTempRow][_iTempCol] == 1) &&
+							((iPlayerMissGrid[_iTempRow + 1][_iTempCol] == 0) && (iPlayerHitGrid[_iTempRow + 1][_iTempCol] == 0));
+
+						if (canGoLeft && !canGoRight) {
+
+							_iTempRow--;
+							break;
+
+						}
+						else if (!canGoLeft && canGoRight) {
+
+							_iTempRow++;
+							break;
+
+						}
+						else if (canGoLeft && canGoRight) {
+
+							if ((rand() % 2) % 2 == 0) {
+
+								_iTempRow--;
+
+							}
+							else {
+
+								_iTempRow++;
+
+							}
+
+							break;
+
+						}
+						else {
+
+							if (_iTempRow < 9) {
+
+								_iTempRow++;
+
+							}
+							else {
+
+								_iTempRow = 0;
+
+							}
+
+						}
+
+					}
+
+				} // !Horizontal
+				  // Direction not yet known
+				else {
+
+					findOpenPath(_iTempRow, _iTempCol);
+
+				} // !Direction not yet known
+
+				if ((iPlayerHitGrid[_iTempRow][_iTempCol] == 1) || (iPlayerMissGrid[_iTempRow][_iTempCol] == 1)) {
+
+					// Repeat the process until it finds a direction to hit
+
+				}
+				else {
+
+					if ((_iTempRow >= 0 && _iTempCol >= 0) && (_iTempRow <= 9 && _iTempCol <= 9)) {
+
+						break;
+
+					}
+					else {
+
+						iShipDirection *= -1;
+
+					}
+
+				}
+
+			} // !While loop
 
 		} // !Has hit the position
 
@@ -1422,7 +1450,7 @@ void Game::findOpenPath(int& _riRow, int& _riCol) const {
 
 	}
 	// Right
-	if (hitChance == 5) {
+	else if (hitChance == 5) {
 
 		_riRow++;
 
@@ -1678,7 +1706,9 @@ void Game::checkForHit(int _iRow, int _iCol, int _iTurn) {
 
 			print(_iRow * 2 + 23, _iCol + 2, RED, getShipCode(iComputerGrid[_iRow][_iCol] - 1));
 			IF_DEBUG(1) {
+
 				print(_iRow * 2 + 1, _iCol + 15, RED, getShipCode(iComputerGrid[_iRow][_iCol] - 1));
+
 			}
 
 			iHitCounter[0]++;
@@ -1694,7 +1724,7 @@ void Game::checkForHit(int _iRow, int _iCol, int _iTurn) {
 		}
 
 	} // Player
-	/// Computer
+	  /// Computer
 	else if (iTurn % 2 == 1) {
 
 		// Hit
@@ -1705,6 +1735,7 @@ void Game::checkForHit(int _iRow, int _iCol, int _iTurn) {
 			iHitRow = _iRow;
 			iHitCol = _iCol;
 			iShipDirection = getShipDirection(_iRow, _iCol);
+
 			if (isShipSunkYet(iPlayerGrid[_iRow][_iCol] - 1, _iRow, _iCol, iTurn % 2) == true) {
 
 				bHasFoundShip = false;
@@ -1870,6 +1901,91 @@ void Game::getWinner(int _iPlayer) const {
 		print(44, 1, YELLOW, "> COMPUTER WINS!");
 
 	}
+
+	// Redrawing the grid
+	char cLetter;
+	cLetter = 'A';
+	print(6, 13, YELLOW, "Opponent");
+	print(29, 13, YELLOW, "Moves");
+	setColor(TEAL);
+	for (int i = 0; i <= 10; ++i) {
+
+		for (int j = 0; j <= 10; ++j) {
+
+			// Drawing the horizontal row letters
+			if ((i > 0 && i <= 10) && j == 0) {
+
+				print(i * 2 - 1, j + 14, cLetter);
+				print(i * 2 + 21, j + 14, cLetter);
+				cLetter++;
+
+			}
+			// Drawing the vertical col numbers
+			else if ((j > 0 && j <= 10) && i == 0) {
+
+				print(i, j + 14, j - 1);
+				print(i + 22, j + 14, j - 1);
+
+			}
+
+		}
+
+	}
+
+	// Redrawing the water
+	// Water
+	for (int i = 0; i < 19; ++i) {
+
+		for (int j = 0; j < 10; ++j) {
+
+			print(i + 1, j + 15, DARKTEAL, "~");
+
+			if (i < 10) {
+
+				print(i * 2 + 23, j + 15, DARKTEAL, "~");
+
+			}
+
+		}
+
+	}
+
+	// Redrawing the ships, hit and miss grids
+	for (int i = 0; i < 10; ++i) {
+
+		for (int j = 0; j < 10; ++j) {
+
+			if (iComputerHitGrid[i][j] == 1) {
+
+				print(i * 2 + 1, j + 15, RED, getShipCode(iComputerGrid[i][j] - 1));
+
+			}
+			else {
+
+				if (iComputerGrid[i][j] >= 1 && iComputerGrid[i][j] <= 5) {
+
+					print(i * 2 + 1, j + 15, GREEN, getShipCode(iComputerGrid[i][j] - 1));
+
+				}
+
+			}
+
+			if (iPlayerHitGrid[i][j] == 1) {
+
+				print(i * 2 + 23, j + 15, RED, getShipCode(iPlayerGrid[i][j] - 1));
+
+			}
+
+			if (iPlayerMissGrid[i][j] == 1) {
+
+				print(i * 2 + 23, j + 15, DARKPINK, "o");
+
+			}
+
+		}
+
+	}
+
 	gotoxy(44, 11, true);
 	confirmRETURN(44, 3);
 
@@ -2037,7 +2153,7 @@ void Game::drawCreditsScreen() {
 
 // Drawing borders of the screen
 // @return void
-void Game::drawScreenBorders() {
+void Game::drawScreenBorders() const {
 
 	setColor(GREEN);
 	for (int i = 0; i < 80; ++i) {

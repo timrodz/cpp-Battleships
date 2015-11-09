@@ -34,7 +34,7 @@ int main() {
 		QUIT = 4,
 		CREDITS = 5
 	};
-	
+
 	// Options for each menu
 	int iMenuOption = 0;
 	int iSortOption = 0;
@@ -43,7 +43,7 @@ int main() {
 
 	// Initial state
 	gameState.setSortMode(MENU);
-	
+
 	while (true) {
 
 		// Menu
@@ -64,7 +64,7 @@ int main() {
 
 		} // Menu
 
-		// Setup
+		  // Setup
 		while (gameState.getSortMode() == SETUP) {
 
 			gameState.drawState(SETUP);
@@ -88,8 +88,8 @@ int main() {
 			}
 
 		} // !Setup
-		
-		// Game
+
+		  // Game
 		while (gameState.getSortMode() == GAME) {
 
 			gameState.drawState(GAME);
@@ -105,7 +105,7 @@ int main() {
 
 		} // !Game
 
-		// Game over
+		  // Game over
 		while (gameState.getSortMode() == GAMEOVER) {
 
 			gameState.drawState(GAMEOVER);
@@ -116,24 +116,24 @@ int main() {
 			}
 			else if (cGameOverOption == 'N') {
 				gameState.setSortMode(QUIT);
-			}			
+			}
 
 		} // !Game over
 
-		// Credits
+		  // Credits
 		while (gameState.getSortMode() == CREDITS) {
 			gameState.drawState(CREDITS);
 			gameState.setSortMode(MENU);
 		} // !Credits 
 
-		// Quit
+		  // Quit
 		if (gameState.getSortMode() == QUIT) {
 			gameState.drawState(QUIT);
 			break;
 		} // !Quit
 
 	} // !Main loop
-	
+
 	game.~Game();
 	return 0;
 
