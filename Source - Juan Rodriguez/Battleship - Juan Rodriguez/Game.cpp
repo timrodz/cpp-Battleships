@@ -640,6 +640,7 @@ void Game::setFireCoordinates(std::string& _rStrInput, int& _riRow, int& _riCol,
 			_rStrInput = readLimitedInput(_iX + 22, _iY);
 			if (_rStrInput >= "A" && _rStrInput <= "J") {
 
+				strRow = _rStrInput;
 				clearInput(44, _iY + 1, _iY + 1);
 				char charToInt = _rStrInput[0];
 				_riRow = charToInt - 65;
@@ -749,6 +750,9 @@ void Game::setFireCoordinates(std::string& _rStrInput, int& _riRow, int& _riCol,
 
 			if (_rStrInput == "N") {
 
+				print(66, 3, " ");
+				print(69, 5, " ");
+				print(67, 7, " ");
 				print(66, 11, " ");
 				print(69, 13, " ");
 				print(71, 16, " ");
@@ -1049,7 +1053,7 @@ void Game::updateGame() {
 		// Printing the hit calls
 		if (iTurn % 2 == 0) {
 
-			print(x, y + 2, GREEN, "> You call " + strInput + "-" + to_string(iCol));
+			print(x, y + 2, GREEN, "> You call " + strRow + "-" + to_string(iCol));
 
 		}
 		else {
@@ -1148,7 +1152,7 @@ void Game::checkForMissingShips() {
 // @param _iTempRow the temporal row that'll add to the final one
 // @param _iTempCol the temporal column that'll add to the final one
 // @return void
-void Game::setRandomCoordinates(int _iTurn, int _iTempRow, int  _iTempCol) {
+void Game::setRandomCoordinates(int _iTurn, int _iTempRow, int _iTempCol) {
 
 	bool canExitLoop = false;
 	// for parsing our row as a letter

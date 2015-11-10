@@ -167,6 +167,7 @@ private:
 	char cDir;
 
 	// GAME
+	std::string strRow;
 	std::string strContinuePlaying;
 	// Determining how many hits has our ship received
 	int shipHitCounter;
